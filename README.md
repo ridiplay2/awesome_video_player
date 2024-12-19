@@ -1,9 +1,82 @@
 # Awesome Video Player
-[awesome_video_player](https://pub.dev/packages/awesome_video_player) brings you all the features of a video player that is well maintained. It's been forked from better_player library and has many fixes and feature improvements.
+[awesome_video_player](https://pub.dev/packages/awesome_video_player) A powerful, actively maintained Flutter video player built for the modern developer.
 
 [![pub package](https://img.shields.io/pub/v/awesome_video_player.svg)](https://pub.dartlang.org/packages/awesome_video_player)
 [![pub package](https://img.shields.io/github/license/jhomlala/betterplayer.svg?style=flat)](https://github.com/jhomlala/betterplayer)
 [![pub package](https://img.shields.io/badge/platform-flutter-blue.svg)](https://github.com/nateshmbhat/awesome_video_player)
+
+## Why Awesome Video Player?
+Looking for a reliable, feature-rich video player that won't be abandoned? You're in the right place! Awesome Video Player is an actively maintained fork of the better_player ecosystem, enhanced with modern features, critical bug fixes, and regular updates.
+
+
+### Not Just Another Video Player
+While other video player libraries come and go, Awesome Video Player is here to stay. Here's how we stand out:
+
+| Feature                                   | Awesome Video Player | video_player | chewie  | better_player | better_player_plus |
+|-------------------------------------------|----------------------|-------------|---------|---------------|--------------------|
+| Active Maintenance                        | ✅                   | ✅          | ✅       | ❌            | ❌                 |
+| DRM (Widevine, FairPlay)                  | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| DASH Streaming                            | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| HLS Streaming                             | ✅                   | Limited     | Limited  | ✅            | ✅                 |
+| HLS Default Audio Stream Selection         | ✅                   | ❌          | ❌       | ❌            | ❌                 |
+| Multi Audio Tracks                        | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| Audio Track Switching                     | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| Multi-Format Subtitles (SRT, WEBVTT, HLS) | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| HTML Tags in Subtitles                    | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| Subtitle Style Customization              | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| Alternative Resolution Switching          | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| Picture in Picture                        | ✅                   | ❌          | ❌       | ❌            | ✅                 |
+| Playlist Support                          | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| Video Caching                             | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| Custom Controls Configuration             | ✅                   | ❌          | Limited  | ✅            | ✅                 |
+| Advanced Error Handling                   | ✅                   | Limited     | Limited  | ✅            | ✅                 |
+| Custom HTTP Headers                       | ✅                   | ✅          | ✅       | ✅            | ✅                 |
+| Recent Bug Fixes                          | ✅                   | ✅          | ✅       | ❌            | ❌                 |
+
+
+---
+
+### Our Commitment
+- 🔧 Actively Maintained: Regular updates, bug fixes, and feature improvements
+- 🚀 Performance First: Built on modern Media3 ExoPlayer
+- 💪 Battle-tested: Based on the robust better_player foundation
+- 👥 Community Driven: Your issues and PRs are welcome and valued
+- 📚 Well Documented: Comprehensive guides and examples
+
+**Features:**  
+- ⚙️ Added advanced configuration options
+- 🎮 Refactored player controls
+- 📝 Playlist support
+- 📱 Video in ListView support
+- 💬 Subtitles support: (formats: SRT, WEBVTT with HTML tags support; subtitles from HLS; multiple subtitles for video)
+- 📡 HTTP Headers support
+- 🖼️ BoxFit of video support
+- ⚡ Playback speed support
+- 🎥 HLS support (track, subtitles (also segmented), audio track selection)
+- 📺 DASH support (track, subtitles, audio track selection)
+- 🔄 Alternative resolution support
+- 💾 Cache support
+- 🔔 Notifications support
+- 📍 Picture in Picture support
+- 🔒 DRM support (token, Widevine, FairPlay EZDRM)
+- 🐛 Bug Fixes
+- ✨ ... and much more!
+
+
+### Notable Improvements Over Predecessor Libraries
+
+**🎯 Correct HLS Default Audio Selection:** Properly respects the DEFAULT flag in HLS manifests for audio track selection, fixing a long-standing issue in better_player and better_player_plus where the first stream was always selected regardless of the default flag.
+
+
+## Documentation
+* [Official documentation](https://jhomlala.github.io/betterplayer/)
+* [Example application](https://github.com/nateshmbhat/awesome_video_player/tree/master/example)
+* [API reference](https://pub.dev/documentation/awesome_video_player/latest/awesome_video_player/awesome_video_player-library.html)
+
+
+
+
+### Some usecase screenshots
 
 <table>
    <tr>
@@ -62,35 +135,18 @@
     </tr>	
 </table>
 
-## Introduction
-This package is forked from [better_player_plus](https://github.com/SunnatilloShavkatov/better_player_plus) which is a nice plugin that covers many video related use cases. Awesome Video Player fixes common bugs, adds more configuration options and solves typical use cases and promises to maintain the library.
 
-**Features:**  
-✔️ Fixed common bugs  
-✔️ Added advanced configuration options  
-✔️ Refactored player controls  
-✔️ Playlist support  
-✔️ Video in ListView support  
-✔️ Subtitles support: (formats: SRT, WEBVTT with HTML tags support; subtitles from HLS; multiple subtitles for video)  
-✔️ HTTP Headers support  
-✔️ BoxFit of video support  
-✔️ Playback speed support  
-✔️ HLS support (track, subtitles (also segmented), audio track selection)  
-✔️ DASH support (track, subtitles, audio track selection)     
-✔️ Alternative resolution support  
-✔️ Cache support  
-✔️ Notifications support  
-✔️ Picture in Picture support     
-✔️ DRM support (token, Widevine, FairPlay EZDRM).    
-✔️ ... and much more!  
+# Contributing
+Your contributions make Awesome Video Player better! Whether it's:
 
+- 🐛 Bug reports
+- 💡 Feature suggestions
+- 🛠️ Pull requests
+- 📚 Documentation improvements
 
-## Documentation
-* [Official documentation](https://jhomlala.github.io/betterplayer/)
-* [Example application](https://github.com/nateshmbhat/awesome_video_player/tree/master/example)
-* [API reference](https://pub.dev/documentation/awesome_video_player/latest/awesome_video_player/awesome_video_player-library.html)
+All contributions are welcome! Let's make this the best video player for Flutter together.
+Support
+Need help? Found a bug? Have a feature request?
+- 📩 Open an issue
+- ⭐ Star the repo to show your support!
 
-
-## Important information
-This plugin development is in progress. You may encounter breaking changes each version. This plugin is developed part-time for free. If you need
-some feature which is supported by other players available in pub dev, then feel free to create PR. All valuable contributions are welcome!
