@@ -19,9 +19,8 @@ While other video player libraries come and go, Awesome Video Player is here to 
 | DASH Streaming                            | ✅                   | ❌          | ❌       | ✅            | ✅                 |
 | HLS Streaming                             | ✅                   | Limited     | Limited  | ✅            | ✅                 |
 | HLS Default Audio Stream Selection         | ✅                   | ❌          | ❌       | ❌            | ❌                 |
-| Multi Audio Tracks                        | ✅                   | ❌          | ❌       | ✅            | ✅                 |
 | Audio Track Switching                     | ✅                   | ❌          | ❌       | ✅            | ✅                 |
-| Multi-Format Subtitles (SRT, WEBVTT, HLS) | ✅                   | ❌          | ❌       | ✅            | ✅                 |
+| Multi-Format Subtitles (SRT, WEBVTT, HLS) | ✅                   | ❌          | Limited  | ✅            | ✅                 |
 | HTML Tags in Subtitles                    | ✅                   | ❌          | ❌       | ✅            | ✅                 |
 | Subtitle Style Customization              | ✅                   | ❌          | ❌       | ✅            | ✅                 |
 | Alternative Resolution Switching          | ✅                   | ❌          | ❌       | ✅            | ✅                 |
