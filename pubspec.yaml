@@ -1,11 +1,19 @@
 name: awesome_video_player
-description: Awesome Video Player based on video_player and Chewie. It's solves many typical use cases and it's easy to run.
-version: 1.0.0
+description: The name says it all :) Feature Rich Advanced video player for Flutter, supports DRM, Subtitles, Multi-audio/video streams, and is well maintained
+issue_tracker: https://github.com/nateshmbhat/awesome_video_player/issues
+repository: https://github.com/nateshmbhat/awesome_video_player
+version: 1.0.1
+topics:
+  - video
+  - videoplayer
+  - drm
+  - audio
+  - hls
 homepage: https://github.com/nateshmbhat/awesome_video_player.git
 documentation: https://jhomlala.github.io/betterplayer/#/
 
 environment:
-  sdk: ">=3.1.0 <4.0.0"
+  sdk: ">=3.1.0"
   flutter: ">=3.13.0"
 
 dependencies:
