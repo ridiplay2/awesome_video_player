@@ -1,5 +1,5 @@
 import 'package:best_player/best_player.dart';
-import 'package:better_player_example/constants.dart';
+import 'package:best_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class ControlsAlwaysVisiblePage extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:best_player/best_player.dart';
-import 'package:better_player_example/constants.dart';
-import 'package:better_player_example/utils.dart';
+import 'package:best_player_example/constants.dart';
+import 'package:best_player_example/utils.dart';
 import 'package:flutter/material.dart';
 
 class MemoryPlayerPage extends StatefulWidget {

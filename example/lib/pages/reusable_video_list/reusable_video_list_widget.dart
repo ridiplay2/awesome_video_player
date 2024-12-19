@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:best_player/best_player.dart';
-import 'package:better_player_example/model/video_list_data.dart';
-import 'package:better_player_example/pages/reusable_video_list/reusable_video_list_controller.dart';
+import 'package:best_player_example/model/video_list_data.dart';
+import 'package:best_player_example/pages/reusable_video_list/reusable_video_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
