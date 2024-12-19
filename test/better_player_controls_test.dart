@@ -1,5 +1,5 @@
-import 'package:better_player_plus/better_player_plus.dart';
-import 'package:better_player_plus/src/core/better_player_with_controls.dart';
+import 'package:best_player/best_player.dart';
+import 'package:best_player/src/core/better_player_with_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:visibility_detector/visibility_detector.dart';
