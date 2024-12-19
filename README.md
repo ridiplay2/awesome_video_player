@@ -1,9 +1,9 @@
-# Better Player Plus
-[![pub package](https://img.shields.io/pub/v/better_player.svg)](https://pub.dartlang.org/packages/better_player)
-[![pub package](https://img.shields.io/github/license/jhomlala/betterplayer.svg?style=flat)](https://github.com/jhomlala/betterplayer)
-[![pub package](https://img.shields.io/badge/platform-flutter-blue.svg)](https://github.com/jhomlala/betterplayer)
+# Awesome Video Player
+[awesome_video_player](https://pub.dev/packages/awesome_video_player) brings you all the features of a video player that is well maintained. It's been forked from better_player library and has many fixes and feature improvements.
 
-Advanced video player based on video_player and Chewie. It's solves many typical use cases and it's easy to run.
+[![pub package](https://img.shields.io/pub/v/awesome_video_player.svg)](https://pub.dartlang.org/packages/awesome_video_player)
+[![pub package](https://img.shields.io/github/license/jhomlala/betterplayer.svg?style=flat)](https://github.com/jhomlala/betterplayer)
+[![pub package](https://img.shields.io/badge/platform-flutter-blue.svg)](https://github.com/nateshmbhat/awesome_video_player)
 
 <table>
    <tr>
@@ -63,7 +63,7 @@ Advanced video player based on video_player and Chewie. It's solves many typical
 </table>
 
 ## Introduction
-This plugin is based on [Chewie](https://github.com/brianegan/chewie). Chewie is awesome plugin and works well in many cases. Better Player is a continuation of ideas introduced in Chewie. Better player fix common bugs, adds more configuration options and solves typical use cases. 
+This package is forked from [better_player_plus](https://github.com/SunnatilloShavkatov/better_player_plus) which is a nice plugin that covers many video related use cases. Awesome Video Player fixes common bugs, adds more configuration options and solves typical use cases and promises to maintain the library.
 
 **Features:**  
 ✔️ Fixed common bugs  
@@ -87,12 +87,10 @@ This plugin is based on [Chewie](https://github.com/brianegan/chewie). Chewie is
 
 ## Documentation
 * [Official documentation](https://jhomlala.github.io/betterplayer/)
-* [Example application](https://github.com/jhomlala/betterplayer/tree/master/example)
-* [API reference](https://pub.dev/documentation/better_player/latest/better_player/better_player-library.html)
+* [Example application](https://github.com/nateshmbhat/awesome_video_player/tree/master/example)
+* [API reference](https://pub.dev/documentation/awesome_video_player/latest/awesome_video_player/awesome_video_player-library.html)
 
 
 ## Important information
 This plugin development is in progress. You may encounter breaking changes each version. This plugin is developed part-time for free. If you need
 some feature which is supported by other players available in pub dev, then feel free to create PR. All valuable contributions are welcome!
-
-

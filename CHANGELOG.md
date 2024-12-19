@@ -1,2 +1,3 @@
 ## 1.0.0
-* Initial release.
+
+* Initial release. Forked from better_player_plus

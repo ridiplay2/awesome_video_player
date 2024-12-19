@@ -1,5 +1,5 @@
-import 'package:better_player_plus/better_player_plus.dart';
-import 'package:better_player_plus/src/core/better_player_utils.dart';
+import 'package:awesome_video_player/awesome_video_player.dart';
+import 'package:awesome_video_player/src/core/better_player_utils.dart';
 
 // Flutter imports:
 import 'package:flutter/material.dart';

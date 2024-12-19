@@ -16,7 +16,7 @@ $ flutter pub get
 3. Import it
 
 ```dart
-import 'package:better_player_plus/better_player_plus.dart';
+import 'package:awesome_video_player/awesome_video_player.dart';
 ```
 
 4. (Required) iOS configuration 
