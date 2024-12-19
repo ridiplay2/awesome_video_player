@@ -1,9 +1,9 @@
 # Best Player
-[best_player](https://pub.dev/packages/best_player) brings you all the features of a video player that is well maintained. It's been forked from better_player library and has many fixes and feature improvements.
+[advanced_video_player](https://pub.dev/packages/advanced_video_player) brings you all the features of a video player that is well maintained. It's been forked from better_player library and has many fixes and feature improvements.
 
-[![pub package](https://img.shields.io/pub/v/best_player.svg)](https://pub.dartlang.org/packages/best_player)
+[![pub package](https://img.shields.io/pub/v/advanced_video_player.svg)](https://pub.dartlang.org/packages/advanced_video_player)
 [![pub package](https://img.shields.io/github/license/jhomlala/betterplayer.svg?style=flat)](https://github.com/jhomlala/betterplayer)
-[![pub package](https://img.shields.io/badge/platform-flutter-blue.svg)](https://github.com/nateshmbhat/best_player)
+[![pub package](https://img.shields.io/badge/platform-flutter-blue.svg)](https://github.com/nateshmbhat/advanced_video_player)
 
 <table>
    <tr>
@@ -87,8 +87,8 @@ This package is forked from [better_player_plus](https://github.com/SunnatilloSh
 
 ## Documentation
 * [Official documentation](https://jhomlala.github.io/betterplayer/)
-* [Example application](https://github.com/nateshmbhat/best_player/tree/master/example)
-* [API reference](https://pub.dev/documentation/best_player/latest/best_player/best_player-library.html)
+* [Example application](https://github.com/nateshmbhat/advanced_video_player/tree/master/example)
+* [API reference](https://pub.dev/documentation/advanced_video_player/latest/advanced_video_player/advanced_video_player-library.html)
 
 
 ## Important information

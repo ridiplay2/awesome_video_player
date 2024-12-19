@@ -1,4 +1,4 @@
-name: best_player_example
+name: advanced_video_player_example
 description: Best Player example usage app.
 version: 1.0.0+1
 publish_to: none
@@ -7,7 +7,7 @@ environment:
   sdk: ">=3.1.0 <4.0.0"
 
 dependencies:
-  best_player:
+  advanced_video_player:
     path: ../
   flutter:
     sdk: flutter

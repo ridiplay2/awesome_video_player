@@ -1,5 +1,5 @@
-import 'package:best_player/best_player.dart';
-import 'package:best_player_example/constants.dart';
+import 'package:advanced_video_player/advanced_video_player.dart';
+import 'package:advanced_video_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPlayerPage extends StatefulWidget {

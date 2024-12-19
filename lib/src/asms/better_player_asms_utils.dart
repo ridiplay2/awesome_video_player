@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:best_player/src/core/better_player_utils.dart';
-import 'package:best_player/src/hls/better_player_hls_utils.dart';
+import 'package:advanced_video_player/src/core/better_player_utils.dart';
+import 'package:advanced_video_player/src/hls/better_player_hls_utils.dart';
 
 import 'better_player_asms_data_holder.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:best_player_example/constants.dart';
-import 'package:best_player_example/model/video_list_data.dart';
+import 'package:advanced_video_player_example/constants.dart';
+import 'package:advanced_video_player_example/model/video_list_data.dart';
 import 'package:flutter/material.dart';
 
 import 'video_list_widget.dart';

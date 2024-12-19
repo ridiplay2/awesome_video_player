@@ -1,6 +1,6 @@
-import 'package:best_player/src/asms/better_player_asms_audio_track.dart';
-import 'package:best_player/src/asms/better_player_asms_subtitle.dart';
-import 'package:best_player/src/asms/better_player_asms_track.dart';
+import 'package:advanced_video_player/src/asms/better_player_asms_audio_track.dart';
+import 'package:advanced_video_player/src/asms/better_player_asms_subtitle.dart';
+import 'package:advanced_video_player/src/asms/better_player_asms_track.dart';
 
 class BetterPlayerAsmsDataHolder {
   List<BetterPlayerAsmsTrack>? tracks;

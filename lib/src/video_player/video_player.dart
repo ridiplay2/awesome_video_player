@@ -5,8 +5,8 @@
 // Dart imports:
 import 'dart:async';
 import 'dart:io';
-import 'package:best_player/src/configuration/better_player_buffering_configuration.dart';
-import 'package:best_player/src/video_player/video_player_platform_interface.dart';
+import 'package:advanced_video_player/src/configuration/better_player_buffering_configuration.dart';
+import 'package:advanced_video_player/src/video_player/video_player_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

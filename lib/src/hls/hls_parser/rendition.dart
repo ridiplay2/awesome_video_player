@@ -1,4 +1,4 @@
-import 'package:best_player/src/hls/hls_parser/format.dart';
+import 'package:advanced_video_player/src/hls/hls_parser/format.dart';
 
 class Rendition {
   Rendition(

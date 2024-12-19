@@ -1,4 +1,4 @@
-import 'package:best_player/src/hls/hls_parser/drm_init_data.dart';
+import 'package:advanced_video_player/src/hls/hls_parser/drm_init_data.dart';
 
 class Segment {
   Segment({

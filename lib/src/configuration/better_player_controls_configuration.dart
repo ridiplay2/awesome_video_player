@@ -1,4 +1,4 @@
-import 'package:best_player/best_player.dart';
+import 'package:advanced_video_player/advanced_video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
