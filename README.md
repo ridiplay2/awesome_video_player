@@ -1,4 +1,4 @@
-# Best Player
+# Advanced Video Player
 [advanced_video_player](https://pub.dev/packages/advanced_video_player) brings you all the features of a video player that is well maintained. It's been forked from better_player library and has many fixes and feature improvements.
 
 [![pub package](https://img.shields.io/pub/v/advanced_video_player.svg)](https://pub.dartlang.org/packages/advanced_video_player)
@@ -63,7 +63,7 @@
 </table>
 
 ## Introduction
-This package is forked from [better_player_plus](https://github.com/SunnatilloShavkatov/better_player_plus) which is a nice plugin that covers many video related use cases. Best Player fixes common bugs, adds more configuration options and solves typical use cases and promises to maintain the library.
+This package is forked from [better_player_plus](https://github.com/SunnatilloShavkatov/better_player_plus) which is a nice plugin that covers many video related use cases. Advanced Video Player fixes common bugs, adds more configuration options and solves typical use cases and promises to maintain the library.
 
 **Features:**  
 ✔️ Fixed common bugs  
@@ -94,5 +94,3 @@ This package is forked from [better_player_plus](https://github.com/SunnatilloSh
 ## Important information
 This plugin development is in progress. You may encounter breaking changes each version. This plugin is developed part-time for free. If you need
 some feature which is supported by other players available in pub dev, then feel free to create PR. All valuable contributions are welcome!
-
-
