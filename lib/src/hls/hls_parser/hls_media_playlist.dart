@@ -1,6 +1,6 @@
-import 'package:advanced_video_player/src/hls/hls_parser/drm_init_data.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/playlist.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/segment.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/drm_init_data.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/playlist.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/segment.dart';
 
 class HlsMediaPlaylist extends HlsPlaylist {
   HlsMediaPlaylist._({

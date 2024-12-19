@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 #import "BetterPlayerPlugin.h"
-#import <advanced_video_player/advanced_video_player-Swift.h>
+#import <awesome_video_player/awesome_video_player-Swift.h>
 
 #if !__has_feature(objc_arc)
 #error Code Requires ARC.

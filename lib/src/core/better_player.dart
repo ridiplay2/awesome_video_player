@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:advanced_video_player/advanced_video_player.dart';
-import 'package:advanced_video_player/src/configuration/better_player_controller_event.dart';
-import 'package:advanced_video_player/src/core/better_player_utils.dart';
-import 'package:advanced_video_player/src/core/better_player_with_controls.dart';
+import 'package:awesome_video_player/awesome_video_player.dart';
+import 'package:awesome_video_player/src/configuration/better_player_controller_event.dart';
+import 'package:awesome_video_player/src/core/better_player_utils.dart';
+import 'package:awesome_video_player/src/core/better_player_with_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:visibility_detector/visibility_detector.dart';

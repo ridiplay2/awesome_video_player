@@ -1,4 +1,4 @@
-import 'package:advanced_video_player/src/hls/hls_parser/hls_track_metadata_entry.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/hls_track_metadata_entry.dart';
 import 'package:collection/collection.dart';
 
 class Metadata {

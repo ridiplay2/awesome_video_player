@@ -1,5 +1,5 @@
-import 'package:advanced_video_player/advanced_video_player.dart';
-import 'package:advanced_video_player/src/core/better_player_utils.dart';
+import 'package:awesome_video_player/awesome_video_player.dart';
+import 'package:awesome_video_player/src/core/better_player_utils.dart';
 import 'package:flutter/material.dart';
 
 ///Special version of Better Player which is used to play video in list view.

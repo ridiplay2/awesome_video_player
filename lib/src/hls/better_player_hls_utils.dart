@@ -1,16 +1,16 @@
-import 'package:advanced_video_player/src/asms/better_player_asms_audio_track.dart';
-import 'package:advanced_video_player/src/asms/better_player_asms_data_holder.dart';
-import 'package:advanced_video_player/src/asms/better_player_asms_subtitle.dart';
-import 'package:advanced_video_player/src/asms/better_player_asms_subtitle_segment.dart';
-import 'package:advanced_video_player/src/asms/better_player_asms_track.dart';
-import 'package:advanced_video_player/src/asms/better_player_asms_utils.dart';
-import 'package:advanced_video_player/src/core/better_player_utils.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/hls_master_playlist.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/hls_media_playlist.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/hls_playlist_parser.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/rendition.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/segment.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/util.dart';
+import 'package:awesome_video_player/src/asms/better_player_asms_audio_track.dart';
+import 'package:awesome_video_player/src/asms/better_player_asms_data_holder.dart';
+import 'package:awesome_video_player/src/asms/better_player_asms_subtitle.dart';
+import 'package:awesome_video_player/src/asms/better_player_asms_subtitle_segment.dart';
+import 'package:awesome_video_player/src/asms/better_player_asms_track.dart';
+import 'package:awesome_video_player/src/asms/better_player_asms_utils.dart';
+import 'package:awesome_video_player/src/core/better_player_utils.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/hls_master_playlist.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/hls_media_playlist.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/hls_playlist_parser.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/rendition.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/segment.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/util.dart';
 
 ///HLS helper class
 sealed class BetterPlayerHlsUtils {

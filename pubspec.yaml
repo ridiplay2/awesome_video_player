@@ -1,7 +1,7 @@
-name: advanced_video_player
-description: Advanced video player based on video_player and Chewie. It's solves many typical use cases and it's easy to run.
+name: awesome_video_player
+description: Awesome Video Player based on video_player and Chewie. It's solves many typical use cases and it's easy to run.
 version: 1.0.0
-homepage: https://github.com/nateshmbhat/advanced_video_player.git
+homepage: https://github.com/nateshmbhat/awesome_video_player.git
 documentation: https://jhomlala.github.io/betterplayer/#/
 
 environment:

@@ -1,9 +1,9 @@
-import 'package:advanced_video_player/src/configuration/better_player_buffering_configuration.dart';
-import 'package:advanced_video_player/src/configuration/better_player_data_source_type.dart';
-import 'package:advanced_video_player/src/configuration/better_player_drm_configuration.dart';
-import 'package:advanced_video_player/src/configuration/better_player_notification_configuration.dart';
-import 'package:advanced_video_player/src/configuration/better_player_video_format.dart';
-import 'package:advanced_video_player/src/subtitles/better_player_subtitles_source.dart';
+import 'package:awesome_video_player/src/configuration/better_player_buffering_configuration.dart';
+import 'package:awesome_video_player/src/configuration/better_player_data_source_type.dart';
+import 'package:awesome_video_player/src/configuration/better_player_drm_configuration.dart';
+import 'package:awesome_video_player/src/configuration/better_player_notification_configuration.dart';
+import 'package:awesome_video_player/src/configuration/better_player_video_format.dart';
+import 'package:awesome_video_player/src/subtitles/better_player_subtitles_source.dart';
 import 'package:flutter/widgets.dart';
 
 import 'better_player_cache_configuration.dart';

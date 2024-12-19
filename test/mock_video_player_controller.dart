@@ -1,5 +1,5 @@
-import 'package:advanced_video_player/src/video_player/video_player.dart';
-import 'package:advanced_video_player/src/video_player/video_player_platform_interface.dart';
+import 'package:awesome_video_player/src/video_player/video_player.dart';
+import 'package:awesome_video_player/src/video_player/video_player_platform_interface.dart';
 
 class MockVideoPlayerController extends VideoPlayerController {
   MockVideoPlayerController() : super(autoCreate: false) {

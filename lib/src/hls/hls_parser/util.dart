@@ -1,5 +1,5 @@
-import 'package:advanced_video_player/src/hls/hls_parser/exception.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/mime_types.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/exception.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/mime_types.dart';
 
 class LibUtil {
   static bool startsWith(List<int> source, List<int> checker) {

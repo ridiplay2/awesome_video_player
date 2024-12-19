@@ -1,21 +1,21 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:advanced_video_player/src/hls/hls_parser/drm_init_data.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/exception.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/format.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/hls_master_playlist.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/hls_media_playlist.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/hls_track_metadata_entry.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/metadata.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/mime_types.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/playlist.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/rendition.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/scheme_data.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/segment.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/util.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/variant.dart';
-import 'package:advanced_video_player/src/hls/hls_parser/variant_info.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/drm_init_data.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/exception.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/format.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/hls_master_playlist.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/hls_media_playlist.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/hls_track_metadata_entry.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/metadata.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/mime_types.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/playlist.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/rendition.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/scheme_data.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/segment.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/util.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/variant.dart';
+import 'package:awesome_video_player/src/hls/hls_parser/variant_info.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 
 class HlsPlaylistParser {

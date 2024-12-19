@@ -1,5 +1,5 @@
-import 'package:advanced_video_player/advanced_video_player.dart';
-import 'package:advanced_video_player_example/constants.dart';
+import 'package:awesome_video_player/awesome_video_player.dart';
+import 'package:awesome_video_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class RotationAndFitPage extends StatefulWidget {

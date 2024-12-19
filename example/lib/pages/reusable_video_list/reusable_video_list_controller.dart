@@ -1,4 +1,4 @@
-import 'package:advanced_video_player/advanced_video_player.dart';
+import 'package:awesome_video_player/awesome_video_player.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 
 class ReusableVideoListController {

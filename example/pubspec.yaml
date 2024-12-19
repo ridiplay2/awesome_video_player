@@ -1,5 +1,5 @@
-name: advanced_video_player_example
-description: Advanced video player example usage app.
+name: awesome_video_player_example
+description: Awesome Video Player example usage app.
 version: 1.0.0+1
 publish_to: none
 
@@ -7,7 +7,7 @@ environment:
   sdk: ">=3.1.0 <4.0.0"
 
 dependencies:
-  advanced_video_player:
+  awesome_video_player:
     path: ../
   flutter:
     sdk: flutter

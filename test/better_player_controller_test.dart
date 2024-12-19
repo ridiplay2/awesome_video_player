@@ -1,4 +1,4 @@
-import 'package:advanced_video_player/advanced_video_player.dart';
+import 'package:awesome_video_player/awesome_video_player.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'better_player_mock_controller.dart';
 import 'better_player_test_utils.dart';
