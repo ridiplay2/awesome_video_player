@@ -8,6 +8,25 @@
 ## Why Awesome Video Player?
 Looking for a reliable, feature-rich video player that won't be abandoned? You're in the right place! Awesome Video Player is an actively maintained fork of the better_player ecosystem, enhanced with modern features, critical bug fixes, and regular updates.
 
+**Features:**  
+- 📝 Playlist support
+- 📱 Video in ListView support
+- 💬 Subtitles support: (formats: SRT, WEBVTT with HTML tags support; subtitles from HLS; multiple subtitles for video)
+- 🔒 DRM support (token, Widevine, FairPlay EZDRM)
+- 📡 HTTP Headers support
+- 🖼️ BoxFit of video support
+- ⚡ Playback speed support
+- 🔄 Alternative resolution support
+- 🎥 HLS support (track, subtitles (also segmented), audio track selection)
+- 📺 DASH support (track, subtitles, audio track selection)
+- ⚙️ Added advanced configuration options
+- 🎮 Refactored player controls
+- 💾 Cache support
+- 🔔 Notifications support
+- 📍 Picture in Picture support
+- 🐛 Bug Fixes
+- ✨ ... and much more!
+
 
 ### Not Just Another Video Player
 While other video player libraries come and go, Awesome Video Player is here to stay. Here's how we stand out:
@@ -42,24 +61,6 @@ While other video player libraries come and go, Awesome Video Player is here to 
 - 👥 Community Driven: Your issues and PRs are welcome and valued
 - 📚 Well Documented: Comprehensive guides and examples
 
-**Features:**  
-- ⚙️ Added advanced configuration options
-- 🎮 Refactored player controls
-- 📝 Playlist support
-- 📱 Video in ListView support
-- 💬 Subtitles support: (formats: SRT, WEBVTT with HTML tags support; subtitles from HLS; multiple subtitles for video)
-- 📡 HTTP Headers support
-- 🖼️ BoxFit of video support
-- ⚡ Playback speed support
-- 🎥 HLS support (track, subtitles (also segmented), audio track selection)
-- 📺 DASH support (track, subtitles, audio track selection)
-- 🔄 Alternative resolution support
-- 💾 Cache support
-- 🔔 Notifications support
-- 📍 Picture in Picture support
-- 🔒 DRM support (token, Widevine, FairPlay EZDRM)
-- 🐛 Bug Fixes
-- ✨ ... and much more!
 
 
 ### Notable Improvements Over Predecessor Libraries
