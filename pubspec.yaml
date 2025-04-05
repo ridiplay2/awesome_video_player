@@ -9,7 +9,6 @@ topics:
   - drm
   - audio
   - hls
-  - dash
 homepage: https://github.com/nateshmbhat/awesome_video_player.git
 documentation: https://jhomlala.github.io/betterplayer/#/
 
