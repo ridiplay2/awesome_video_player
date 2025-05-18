@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release tag (e.g., v1.0.5)'
+        description: "Release tag (e.g., v1.0.5)"
         required: true
       release_name:
-        description: 'Release name (e.g., Version 1.0.5)'
+        description: "Release name (e.g., Version 1.0.5)"
         required: true
       release_body:
-        description: 'Release notes/changelog content'
+        description: "Release notes/changelog content"
         required: true
 
 jobs:
@@ -43,7 +43,7 @@ jobs:
           RELEASE_DATE=$(date +"%Y-%m-%d")
 
           # Create the new changelog entry
-          NEW_ENTRY="## ${RELEASE_NAME} (${RELEASE_DATE})\n\n${RELEASE_BODY}\n\n"
+          NEW_ENTRY="## [${RELEASE_TAG}] - ${RELEASE_DATE}\n\n###${RELEASE_NAME}\n${RELEASE_BODY}\n\n"
 
           # Prepend the new entry to the CHANGELOG.md file
           echo -e "${NEW_ENTRY}$(cat CHANGELOG.md)" > CHANGELOG.md
