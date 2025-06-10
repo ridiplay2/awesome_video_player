@@ -11,6 +11,9 @@ class BetterPlayerSubtitlesSource {
   ///Name of the subtitles, default value is "Default subtitles"
   final String? name;
 
+  ///Language of the subtitles
+  final String? language;
+
   ///Url of the subtitles, used with file or network subtitles
   final List<String?>? urls;
 
@@ -39,6 +42,7 @@ class BetterPlayerSubtitlesSource {
   BetterPlayerSubtitlesSource({
     this.type,
     this.name = "Default subtitles",
+    this.language,
     this.urls,
     this.content,
     this.selectedByDefault,
@@ -56,15 +60,14 @@ class BetterPlayerSubtitlesSource {
     String? content,
     bool? selectedByDefault,
     Map<String, String>? headers,
-  }) =>
-      [
-        BetterPlayerSubtitlesSource(
-          type: type,
-          name: name,
-          urls: [url],
-          content: content,
-          selectedByDefault: selectedByDefault,
-          headers: headers,
-        )
-      ];
+  }) => [
+    BetterPlayerSubtitlesSource(
+      type: type,
+      name: name,
+      urls: [url],
+      content: content,
+      selectedByDefault: selectedByDefault,
+      headers: headers,
+    ),
+  ];
 }

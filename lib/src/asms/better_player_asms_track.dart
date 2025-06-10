@@ -13,7 +13,7 @@ class BetterPlayerAsmsTrack {
   final int? bitrate;
 
   ///Frame rate of the track
-  final int? frameRate;
+  final double? frameRate;
 
   ///Codecs of the track
   final String? codecs;

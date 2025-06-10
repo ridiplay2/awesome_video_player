@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #import "BetterPlayer.h"
+#include <AVFoundation/AVFoundation.h>
 #import <awesome_video_player/awesome_video_player-Swift.h>
 
 static void* timeRangeContext = &timeRangeContext;
@@ -354,7 +355,9 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
             CMTIME_COMPARE_INLINE(_player.currentItem.currentTime, >, kCMTimeZero) && //if video was started
             CMTIME_COMPARE_INLINE(_player.currentItem.currentTime, <, _player.currentItem.duration) && //but not yet finished
             _isPlaying) { //instance variable to handle overall state (changed to YES when user triggers playback)
-            [self handleStalled];
+
+            // Disable stalled check for now because it's causing issues with the video not pausing after close short form.
+            // [self handleStalled];
         }
     }
 
@@ -525,6 +528,31 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     return [BetterPlayerTimeUtils FLTCMTimeToMillis:(time)];
 }
 
+- (NSDictionary*)platformDependentStats {
+    AVPlayerItemAccessLog *accessLog = [[_player currentItem] accessLog];
+    if (!accessLog) {
+        return @{};
+    }
+    AVPlayerItemAccessLogEvent *lastEvent = [accessLog.events lastObject];
+    if (!lastEvent) {
+        return @{};
+    }
+    // See: https://developer.apple.com/documentation/avfoundation/avplayeritemaccesslogevent
+    return @{
+        @"downloadOverdue": @(lastEvent.downloadOverdue),
+        @"durationWatched": @([BetterPlayerTimeUtils FLTNSTimeIntervalToMillis:(lastEvent.durationWatched)]),
+        @"mediaRequestsWWAN": @(lastEvent.mediaRequestsWWAN),
+        @"numberOfDroppedVideoFrames": @(lastEvent.numberOfDroppedVideoFrames),
+        @"numberOfMediaRequests": @(lastEvent.numberOfMediaRequests),
+        @"numberOfServerAddressChanges": @(lastEvent.numberOfServerAddressChanges),
+        @"numberOfStalls": @(lastEvent.numberOfStalls),
+        @"observedBitrate": @(lastEvent.observedBitrate),
+        @"observedBitrateStandardDeviation": @(lastEvent.observedBitrateStandardDeviation),
+        @"segmentsDownloadedDuration": @([BetterPlayerTimeUtils FLTNSTimeIntervalToMillis:(lastEvent.segmentsDownloadedDuration)]),
+        @"startupTime": @([BetterPlayerTimeUtils FLTNSTimeIntervalToMillis:(lastEvent.startupTime)]),
+    };
+}
+
 - (void)seekTo:(int)location {
     ///When player is playing, pause video, seek to new position and start again. This will prevent issues with seekbar jumps.
     bool wasPlaying = _isPlaying;
@@ -539,7 +567,39 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         if (wasPlaying){
             _player.rate = _playerRate;
         }
+
+        if (_eventSink != nil) {
+            _eventSink(@{@"event" : @"seekCompleted", @"key" : _key});
+        }
     }];
+}
+
+- (void)seekTo:(int)location withCompletionHandler:(void (^)(BOOL finished))completionHandler {
+    bool wasPlaying = _isPlaying;
+    if (wasPlaying){
+        [_player pause];
+    }
+
+    [_player seekToTime:CMTimeMake(location, 1000)
+        toleranceBefore:kCMTimeZero
+         toleranceAfter:kCMTimeZero
+      completionHandler:^(BOOL finished){
+        if (wasPlaying){
+            _player.rate = _playerRate;
+        }
+
+        if (_eventSink != nil) {
+            _eventSink(@{@"event" : @"seekCompleted", @"key" : _key});
+        }
+
+        if (completionHandler) {
+            completionHandler(finished);
+        }
+    }];
+}
+
+- (void)cancelPendingSeek {
+    [_player.currentItem cancelPendingSeeks];
 }
 
 - (void)setIsLooping:(bool)isLooping {
