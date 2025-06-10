@@ -70,6 +70,7 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
           'overriddenDuration': dataSource.overriddenDuration?.inMilliseconds,
           'activityName': dataSource.activityName,
           'allowedScreenSleep': dataSource.allowedScreenSleep,
+          'startPositionMs': dataSource.startPositionMs,
         };
         break;
       case DataSourceType.network:
@@ -95,6 +96,7 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
           'clearKey': dataSource.clearKey,
           'videoExtension': dataSource.videoExtension,
           'allowedScreenSleep': dataSource.allowedScreenSleep,
+          'startPositionMs': dataSource.startPositionMs,
         };
         break;
       case DataSourceType.file:
@@ -113,6 +115,7 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
           'activityName': dataSource.activityName,
           'clearKey': dataSource.clearKey,
           'allowedScreenSleep': dataSource.allowedScreenSleep,
+          'startPositionMs': dataSource.startPositionMs,
         };
         break;
     }
@@ -185,6 +188,13 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
   }
 
   @override
+  Future<void> cancelPendingSeek(int? textureId) {
+    return _channel.invokeMethod<void>('cancelPendingSeek', <String, dynamic>{
+      'textureId': textureId,
+    });
+  }
+
+  @override
   Future<Duration> getPosition(int? textureId) async {
     return Duration(
       milliseconds:
@@ -212,6 +222,15 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
     }
 
     return DateTime.fromMillisecondsSinceEpoch(milliseconds);
+  }
+
+  @override
+  Future<Map<String, num>> getPlatformDependentStats(int? textureId) async {
+    return (await _channel.invokeMethod<Map<Object?, Object?>>(
+          'platformDependentStats',
+          <String, dynamic>{'textureId': textureId},
+        ))?.cast<String, num>() ??
+        {};
   }
 
   @override
@@ -369,6 +388,9 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
         case 'pipStop':
           return VideoEvent(eventType: VideoEventType.pipStop, key: key);
 
+        case 'seekCompleted':
+          return VideoEvent(eventType: VideoEventType.seekCompleted, key: key);
+
         default:
           return VideoEvent(eventType: VideoEventType.unknown, key: key);
       }
@@ -386,6 +408,13 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
     } else {
       return Texture(textureId: textureId!);
     }
+  }
+
+  @override
+  Future<void> clear(int? textureId) {
+    return _channel.invokeMethod<void>('clear', <String, dynamic>{
+      'textureId': textureId,
+    });
   }
 
   EventChannel _eventChannelFor(int? textureId) {

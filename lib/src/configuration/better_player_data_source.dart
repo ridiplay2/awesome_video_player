@@ -76,6 +76,9 @@ class BetterPlayerDataSource {
   ///platform.
   final BetterPlayerBufferingConfiguration bufferingConfiguration;
 
+  ///Start position in milliseconds
+  final int? startPositionMs;
+
   ///Whether the screen should be allowed to sleep during video playback.
   ///Defaults to null, which means the value from BetterPlayerConfiguration will be used.
   final bool? allowedScreenSleep;
@@ -94,9 +97,7 @@ class BetterPlayerDataSource {
     this.resolutions,
     this.cacheConfiguration,
     this.notificationConfiguration =
-        const BetterPlayerNotificationConfiguration(
-      showNotification: false,
-    ),
+        const BetterPlayerNotificationConfiguration(showNotification: false),
     this.overriddenDuration,
     this.videoFormat,
     this.videoExtension,
@@ -104,12 +105,14 @@ class BetterPlayerDataSource {
     this.placeholder,
     this.bufferingConfiguration = const BetterPlayerBufferingConfiguration(),
     this.allowedScreenSleep,
+    this.startPositionMs,
   }) : assert(
-            (type == BetterPlayerDataSourceType.network ||
-                    type == BetterPlayerDataSourceType.file) ||
-                (type == BetterPlayerDataSourceType.memory &&
-                    bytes?.isNotEmpty == true),
-            "Url can't be null in network or file data source | bytes can't be null when using memory data source");
+         (type == BetterPlayerDataSourceType.network ||
+                 type == BetterPlayerDataSourceType.file) ||
+             (type == BetterPlayerDataSourceType.memory &&
+                 bytes?.isNotEmpty == true),
+         "Url can't be null in network or file data source | bytes can't be null when using memory data source",
+       );
 
   ///Factory method to build network data source which uses url as data source
   ///Bytes parameter is not used in this data source.
@@ -173,8 +176,11 @@ class BetterPlayerDataSource {
       useAsmsTracks: useAsmsTracks,
       resolutions: qualities,
       cacheConfiguration: cacheConfiguration,
-      notificationConfiguration: notificationConfiguration =
-          const BetterPlayerNotificationConfiguration(showNotification: false),
+      notificationConfiguration:
+          notificationConfiguration =
+              const BetterPlayerNotificationConfiguration(
+                showNotification: false,
+              ),
       overriddenDuration: overriddenDuration,
       placeholder: placeholder,
     );
@@ -204,8 +210,11 @@ class BetterPlayerDataSource {
       useAsmsTracks: useAsmsTracks,
       resolutions: qualities,
       cacheConfiguration: cacheConfiguration,
-      notificationConfiguration: notificationConfiguration =
-          const BetterPlayerNotificationConfiguration(showNotification: false),
+      notificationConfiguration:
+          notificationConfiguration =
+              const BetterPlayerNotificationConfiguration(
+                showNotification: false,
+              ),
       overriddenDuration: overriddenDuration,
       placeholder: placeholder,
     );

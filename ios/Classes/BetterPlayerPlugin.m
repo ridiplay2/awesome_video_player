@@ -310,7 +310,8 @@ bool _remoteCommandsInitialized = false;
             NSString* cacheKey = dataSource[@"cacheKey"];
             NSNumber* maxCacheSize = dataSource[@"maxCacheSize"];
             NSString* videoExtension = dataSource[@"videoExtension"];
-            
+            NSNumber* startPositionMs = dataSource[@"startPositionMs"]; 
+
             int overriddenDuration = 0;
             if ([dataSource objectForKey:@"overriddenDuration"] != [NSNull null]){
                 overriddenDuration = [dataSource[@"overriddenDuration"] intValue];
@@ -348,7 +349,20 @@ bool _remoteCommandsInitialized = false;
                 [player setDataSourceURL:[NSURL URLWithString:uriArg] withKey:key withCertificateUrl:certificateUrl withLicenseUrl: licenseUrl withHeaders:headers withCache: useCache cacheKey:cacheKey cacheManager:_cacheManager overriddenDuration:overriddenDuration videoExtension: videoExtension allowedScreenSleep:allowedScreenSleep];
             } else {
                 result(FlutterMethodNotImplemented);
+                return;
             }
+
+            if (startPositionMs != [NSNull null] && startPositionMs != nil) {
+                int startPosition = [startPositionMs intValue];
+                if (startPosition != 0) {
+                    NSLog(@"BetterPlayer startPositionMs is not null, seek to its value: %d", startPosition);
+                    [player seekTo:startPosition withCompletionHandler:^(BOOL finished) {
+                        result(nil);
+                    }];
+                    return;
+                }
+            }
+
             result(nil);
         } else if ([@"dispose" isEqualToString:call.method]) {
             [player clear];
@@ -389,15 +403,20 @@ bool _remoteCommandsInitialized = false;
             result(@([player position]));
         } else if ([@"absolutePosition" isEqualToString:call.method]) {
             result(@([player absolutePosition]));
+        } else if ([@"platformDependentStats" isEqualToString:call.method]) {
+            result(player.platformDependentStats);
         } else if ([@"seekTo" isEqualToString:call.method]) {
             [player seekTo:[argsMap[@"location"] intValue]];
+            result(nil);
+        } else if ([@"cancelPendingSeek" isEqualToString:call.method]) {
+            [player cancelPendingSeek];
             result(nil);
         } else if ([@"pause" isEqualToString:call.method]) {
             [player pause];
             result(nil);
         } else if ([@"setSpeed" isEqualToString:call.method]) {
             [player setSpeed:[[argsMap objectForKey:@"speed"] doubleValue] result:result];
-        }else if ([@"setTrackParameters" isEqualToString:call.method]) {
+        } else if ([@"setTrackParameters" isEqualToString:call.method]) {
             int width = [argsMap[@"width"] intValue];
             int height = [argsMap[@"height"] intValue];
             int bitrate = [argsMap[@"bitrate"] intValue];
@@ -428,6 +447,8 @@ bool _remoteCommandsInitialized = false;
             [player setAudioTrack:name index: index];
         } else if ([@"setMixWithOthers" isEqualToString:call.method]){
             [player setMixWithOthers:[argsMap[@"mixWithOthers"] boolValue]];
+        } else if ([@"clear" isEqualToString:call.method]) {
+            [player clear];
         } else if ([@"preCache" isEqualToString:call.method]){
             NSDictionary* dataSource = argsMap[@"dataSource"];
             NSString* urlArg = dataSource[@"uri"];

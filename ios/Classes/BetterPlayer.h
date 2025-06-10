@@ -45,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)setMixWithOthers:(bool)mixWithOthers;
 - (void)seekTo:(int)location;
+- (void)seekTo:(int)location withCompletionHandler:(void (^)(BOOL finished))completionHandler;
+- (void)cancelPendingSeek;
 - (void)setDataSourceAsset:(NSString*)asset withKey:(NSString*)key withCertificateUrl:(NSString*)certificateUrl withLicenseUrl:(NSString*)licenseUrl cacheKey:(NSString*)cacheKey cacheManager:(CacheManager*)cacheManager overriddenDuration:(int) overriddenDuration allowedScreenSleep:(BOOL)allowedScreenSleep;
 - (void)setDataSourceURL:(NSURL*)url withKey:(NSString*)key withCertificateUrl:(NSString*)certificateUrl withLicenseUrl:(NSString*)licenseUrl withHeaders:(NSDictionary*)headers withCache:(BOOL)useCache cacheKey:(NSString*)cacheKey cacheManager:(CacheManager*)cacheManager overriddenDuration:(int) overriddenDuration videoExtension: (NSString*) videoExtension allowedScreenSleep:(BOOL)allowedScreenSleep;
 - (void)setVolume:(double)volume;
@@ -55,6 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setPictureInPicture:(BOOL)pictureInPicture;
 - (void)disablePictureInPicture;
 - (int64_t)absolutePosition;
+- (NSDictionary*)platformDependentStats;
 - (int64_t) FLTCMTimeToMillis:(CMTime) time;
 
 - (void)clear;

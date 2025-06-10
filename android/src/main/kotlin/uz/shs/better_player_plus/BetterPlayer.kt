@@ -134,7 +134,8 @@ internal class BetterPlayer(
         licenseUrl: String?,
         drmHeaders: Map<String, String>?,
         cacheKey: String?,
-        clearKey: String?
+        clearKey: String?,
+        startPositionMs: Int?,
     ) {
         this.key = key
         isInitialized = false
@@ -207,6 +208,20 @@ internal class BetterPlayer(
             exoPlayer?.setMediaSource(mediaSource)
         }
         exoPlayer?.prepare()
+
+        exoPlayerStatsListener?.let { exoPlayerStatsListener ->
+            exoPlayer?.removeAnalyticsListener(exoPlayerStatsListener)
+        }
+        exoPlayerStatsListener = PlaybackStatsListener(false, null)
+        exoPlayerStatsListener?.let { exoPlayerStatsListener ->
+            exoPlayer?.addAnalyticsListener(exoPlayerStatsListener)
+        }
+
+        if (startPositionMs != null && startPositionMs != 0) {
+            initSeekPlatformChannelResult = result
+            seekTo(startPositionMs)
+            return
+        }
         result.success(null)
     }
 
@@ -472,6 +487,24 @@ internal class BetterPlayer(
         exoPlayer?.setVideoSurface(surface)
         setAudioAttributes(exoPlayer, true)
         exoPlayer?.addListener(object : Player.Listener {
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int,
+            ) {
+                if (reason == DISCONTINUITY_REASON_SEEK) {
+                    initSeekPlatformChannelResult?.let { result ->
+                        result.success(null)
+                        initSeekPlatformChannelResult = null
+                        return
+                    }
+
+                    val event: MutableMap<String, Any?> = HashMap()
+                    event["event"] = "seekCompleted"
+                    eventSink.success(event)
+                }
+            }
+
             override fun onPlaybackStateChanged(playbackState: Int) {
                 when (playbackState) {
                     Player.STATE_BUFFERING -> {
@@ -579,6 +612,10 @@ internal class BetterPlayer(
         exoPlayer?.seekTo(location.toLong())
     }
 
+    fun cancelPendingSeek() {
+        // no operation for exoplayer. for ios method.
+    }
+
     val position: Long
         get() = exoPlayer?.currentPosition ?: 0L
 
@@ -594,6 +631,32 @@ internal class BetterPlayer(
                 }
             }
             return exoPlayer?.currentPosition ?: 0L
+        }
+
+    val platformDependentStats: HashMap<String, Number>
+        get() {
+            val stats = exoPlayerStatsListener?.getCombinedPlaybackStats()
+            if (stats == null) {
+                return HashMap()
+            }
+            // See: https://github.com/google/ExoPlayer/blob/release-v2/library/core/src/main/java/com/google/android/exoplayer2/analytics/PlaybackStats.java
+            val values = hashMapOf<String, Number>(
+                "fatalErrorCount" to stats.fatalErrorCount,
+                "fatalErrorPlaybackCount" to stats.fatalErrorPlaybackCount,
+                "nonFatalErrorCount" to stats.nonFatalErrorCount,
+                "playbackCount" to stats.playbackCount,
+                "totalAudioUnderruns" to stats.totalAudioUnderruns,
+                "totalDroppedFrames" to stats.totalDroppedFrames,
+                "totalPauseBufferCount" to stats.totalPauseBufferCount,
+                "totalPauseCount" to stats.totalPauseCount,
+                "totalPlayTimeMs" to stats.totalPlayTimeMs,
+                "totalRebufferCount" to stats.totalRebufferCount,
+                "totalSeekCount" to stats.totalSeekCount,
+            )
+            if (stats.maxRebufferTimeMs != Long.MIN_VALUE) {
+                values["maxRebufferTimeMs"] = stats.maxRebufferTimeMs
+            }
+            return values
         }
 
     private fun sendInitialized() {
@@ -748,7 +811,14 @@ internal class BetterPlayer(
         setAudioAttributes(exoPlayer, mixWithOthers)
     }
 
+    fun clear() {
+
+    }
+
     fun dispose() {
+        exoPlayerStatsListener?.let { exoPlayerStatsListener ->
+            exoPlayer?.removeAnalyticsListener(exoPlayerStatsListener)
+        }
         disposeMediaSession()
         disposeRemoteNotifications()
         if (isInitialized) {

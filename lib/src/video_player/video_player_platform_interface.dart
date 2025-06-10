@@ -46,7 +46,8 @@ abstract class VideoPlayerPlatform {
         instance._verifyProvidesDefaultImplementations();
       } catch (_) {
         throw AssertionError(
-            'Platform interfaces must not be implemented with `implements`');
+          'Platform interfaces must not be implemented with `implements`',
+        );
       }
     }
     _instance = instance;
@@ -66,8 +67,9 @@ abstract class VideoPlayerPlatform {
   }
 
   /// Creates an instance of a video player and returns its textureId.
-  Future<int?> create(
-      {BetterPlayerBufferingConfiguration? bufferingConfiguration}) {
+  Future<int?> create({
+    BetterPlayerBufferingConfiguration? bufferingConfiguration,
+  }) {
     throw UnimplementedError('create() has not been implemented.');
   }
 
@@ -118,13 +120,21 @@ abstract class VideoPlayerPlatform {
 
   /// Sets the video track parameters (used to select quality of the video)
   Future<void> setTrackParameters(
-      int? textureId, int? width, int? height, int? bitrate) {
+    int? textureId,
+    int? width,
+    int? height,
+    int? bitrate,
+  ) {
     throw UnimplementedError('setTrackParameters() has not been implemented.');
   }
 
   /// Sets the video position to a [Duration] from the start.
   Future<void> seekTo(int? textureId, Duration? position) {
     throw UnimplementedError('seekTo() has not been implemented.');
+  }
+
+  Future<void> cancelPendingSeek(int? textureId) {
+    throw UnimplementedError('cancelPendingSeek() has not been implemented.');
   }
 
   /// Gets the video position as [Duration] from the start.
@@ -137,22 +147,36 @@ abstract class VideoPlayerPlatform {
     throw UnimplementedError('getAbsolutePosition() has not been implemented.');
   }
 
-  ///Enables PiP mode.
-  Future<void> enablePictureInPicture(int? textureId, double? top, double? left,
-      double? width, double? height) {
+  Future<Map<String, num>> getPlatformDependentStats(int? textureId) {
     throw UnimplementedError(
-        'enablePictureInPicture() has not been implemented.');
+      'getPlatformDependentStats() has not been implemented.',
+    );
+  }
+
+  ///Enables PiP mode.
+  Future<void> enablePictureInPicture(
+    int? textureId,
+    double? top,
+    double? left,
+    double? width,
+    double? height,
+  ) {
+    throw UnimplementedError(
+      'enablePictureInPicture() has not been implemented.',
+    );
   }
 
   ///Disables PiP mode.
   Future<void> disablePictureInPicture(int? textureId) {
     throw UnimplementedError(
-        'disablePictureInPicture() has not been implemented.');
+      'disablePictureInPicture() has not been implemented.',
+    );
   }
 
   Future<bool?> isPictureInPictureEnabled(int? textureId) {
     throw UnimplementedError(
-        'isPictureInPictureEnabled() has not been implemented.');
+      'isPictureInPictureEnabled() has not been implemented.',
+    );
   }
 
   Future<void> setAudioTrack(int? textureId, String? name, int? index) {
@@ -165,6 +189,10 @@ abstract class VideoPlayerPlatform {
 
   Future<void> clearCache() {
     throw UnimplementedError('clearCache() has not been implemented.');
+  }
+
+  Future<void> clear(int? textureId) {
+    throw UnimplementedError('clear() has not been implemented.');
   }
 
   /// Returns a widget displaying the video with a given textureID.
@@ -228,6 +256,7 @@ class DataSource {
     this.clearKey,
     this.videoExtension,
     this.allowedScreenSleep,
+    this.startPositionMs,
   }) : assert(uri == null || asset == null);
 
   /// Describes the type of data source this [VideoPlayerController]
@@ -310,6 +339,8 @@ class DataSource {
   /// Defaults to null, which means the platform default behavior is used.
   final bool? allowedScreenSleep;
 
+  final int? startPositionMs;
+
   /// Key to compare DataSource
   String get key {
     String? result = "";
@@ -351,7 +382,7 @@ enum DataSourceType {
   network,
 
   /// The video was loaded off of the local filesystem.
-  file
+  file,
 }
 
 /// The file format of the given video.
@@ -366,7 +397,7 @@ enum VideoFormat {
   ss,
 
   /// Any format other than the other ones defined in this enum.
-  other
+  other,
 }
 
 /// Event emitted from the platform implementation.
@@ -466,6 +497,9 @@ enum VideoEventType {
 
   /// Picture in picture mode has been dismissed
   pipStop,
+
+  /// The seek has been completed
+  seekCompleted,
 
   /// An unknown event has been received.
   unknown,
