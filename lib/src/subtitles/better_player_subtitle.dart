@@ -21,7 +21,7 @@ class BetterPlayerSubtitle {
         return BetterPlayerSubtitle._();
       }
 
-      final scanner = value.split('\n');
+      final scanner = value.split('\n').where((e) => e.isNotEmpty).toList();
       if (scanner.length == 2) {
         return _handle2LinesSubtitles(scanner);
       }
@@ -72,6 +72,10 @@ class BetterPlayerSubtitle {
   }
 
   static BetterPlayerSubtitle _handle2LinesSubtitles(List<String> scanner) {
+    if (!scanner[0].contains(timerSeparator)) {
+      return BetterPlayerSubtitle._();
+    }
+
     try {
       final timeSplit = scanner[0].split(timerSeparator);
       final start = _stringToDuration(timeSplit[0]);
