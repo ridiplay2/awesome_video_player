@@ -178,6 +178,35 @@ This should be parsed correctly.''';
         expect(
             subtitles[0].texts, equals(['This should be parsed correctly.']));
       });
+
+      test(
+          'should handle WebVTT with empty cues and Korean text with formatting',
+          () {
+        // Given: A WebVTT file with empty cues and Korean text
+        const webVttContent = '''WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.260
+
+
+2
+00:00:10.260 --> 00:00:12.178
+<b>[김하린] 나 진짜 욕구 불만인가?</b>
+
+3
+00:00:12.178 --> 00:00:13.763
+<b>왜 그런 꿈을…</b>
+''';
+
+        // When: Parsing the WebVTT content
+        final subtitles =
+            BetterPlayerSubtitlesFactory.parseString(webVttContent);
+
+        // Then: Should parse only the valid subtitles with text
+        expect(subtitles.length, equals(2));
+        expect(subtitles[0].texts, equals(['<b>[김하린] 나 진짜 욕구 불만인가?</b>']));
+        expect(subtitles[1].texts, equals(['<b>왜 그런 꿈을…</b>']));
+      });
     });
 
     group('Individual Subtitle Block Parsing', () {
