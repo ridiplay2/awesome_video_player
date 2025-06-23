@@ -26,8 +26,8 @@ class BetterPlayerSubtitlesDrawer extends StatefulWidget {
 class _BetterPlayerSubtitlesDrawerState
     extends State<BetterPlayerSubtitlesDrawer> {
   final RegExp htmlRegExp =
-  // ignore: unnecessary_raw_strings
-  RegExp(r"<[^>]*>", multiLine: true);
+      // ignore: unnecessary_raw_strings
+      RegExp(r"<[^>]*>", multiLine: true);
   late TextStyle _innerTextStyle;
   late TextStyle _outerTextStyle;
 
@@ -70,17 +70,16 @@ class _BetterPlayerSubtitlesDrawerState
         widget.betterPlayerController.betterPlayerSubtitlesSource?.language;
     final String fontFamily =
         _configuration!.languageFonts?[_currentLanguage] ??
-        _configuration!.fontFamily;
+            _configuration!.fontFamily;
 
     _outerTextStyle = TextStyle(
       fontSize: _configuration!.fontSize,
       fontFamily: fontFamily,
       fontVariations: _configuration!.fontVariations,
-      foreground:
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = _configuration!.outlineSize
-            ..color = _configuration!.outlineColor,
+      foreground: Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = _configuration!.outlineSize
+        ..color = _configuration!.outlineColor,
     );
 
     _innerTextStyle = TextStyle(
@@ -112,7 +111,7 @@ class _BetterPlayerSubtitlesDrawerState
 
   ///Called when player state has changed, i.e. new player position, etc.
   void _updateState() {
-    if (mounted) {
+    if (mounted && !widget.betterPlayerController.isDetachingFromWidget) {
       setState(() {
         _latestValue =
             widget.betterPlayerController.videoPlayerController!.value;
@@ -133,10 +132,9 @@ class _BetterPlayerSubtitlesDrawerState
       width: double.infinity,
       child: Padding(
         padding: EdgeInsets.only(
-          bottom:
-              _playerVisible
-                  ? _configuration!.bottomPadding + 30
-                  : _configuration!.bottomPadding,
+          bottom: _playerVisible
+              ? _configuration!.bottomPadding + 30
+              : _configuration!.bottomPadding,
           left: _configuration!.leftPadding,
           right: _configuration!.rightPadding,
         ),
