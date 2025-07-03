@@ -202,6 +202,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       StreamController.broadcast();
   final Completer<void> _creatingCompleter = Completer<void>();
   int? _textureId;
+  DataSource? _currentDataSource;
 
   Timer? _timer;
   bool _isDisposed = false;
@@ -233,9 +234,15 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       videoEventStreamController.add(event);
       switch (event.eventType) {
         case VideoEventType.initialized:
-          value = value.copyWith(duration: event.duration, size: event.size);
-          _initializingCompleter.complete(null);
-          _applyPlayPause();
+          // VideoPlayerController can be reused and setDataSource can be called
+          // multiple times, so we need to check if the current data source is
+          // the same as the one that initialized the video.
+          if (_currentDataSource == null ||
+              _currentDataSource!.key == event.key) {
+            value = value.copyWith(duration: event.duration, size: event.size);
+            _initializingCompleter.complete(null);
+            _applyPlayPause();
+          }
           break;
         case VideoEventType.completed:
           value = value.copyWith(isPlaying: false, position: value.duration);
@@ -437,6 +444,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     if (!_creatingCompleter.isCompleted) await _creatingCompleter.future;
 
     _initializingCompleter = Completer<void>();
+    _currentDataSource = dataSourceDescription;
 
     await VideoPlayerPlatform.instance.setDataSource(
       _textureId,
