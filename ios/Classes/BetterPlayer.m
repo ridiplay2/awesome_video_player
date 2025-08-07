@@ -288,6 +288,10 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 }
 
 -(void)startStalledCheck{
+    if (!_isPlaying){
+        return;
+    }
+
     if (_player.currentItem.playbackLikelyToKeepUp ||
         [self availableDuration] - CMTimeGetSeconds(_player.currentItem.currentTime) > 10.0) {
         [self play];
@@ -357,7 +361,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
             _isPlaying) { //instance variable to handle overall state (changed to YES when user triggers playback)
 
             // Disable stalled check for now because it's causing issues with the video not pausing after close short form.
-            // [self handleStalled];
+            [self handleStalled];
         }
     }
 
