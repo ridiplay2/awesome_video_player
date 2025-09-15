@@ -267,6 +267,7 @@ class _BetterPlayerState extends State<BetterPlayer>
       onVisibilityChanged: (VisibilityInfo info) =>
           widget.controller.onPlayerVisibilityChanged(info.visibleFraction),
       child: BetterPlayerWithControls(
+        key: Key("${widget.controller.hashCode}_key"),
         controller: widget.controller,
       ),
     );
