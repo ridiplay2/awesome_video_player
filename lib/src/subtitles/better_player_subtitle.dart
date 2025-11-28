@@ -6,12 +6,14 @@ class BetterPlayerSubtitle {
   final Duration? start;
   final Duration? end;
   final List<String>? texts;
+  final Map<String, String>? cueSettings;
 
   BetterPlayerSubtitle._({
     this.index,
     this.start,
     this.end,
     this.texts,
+    this.cueSettings,
   });
 
   factory BetterPlayerSubtitle(String value, bool isWebVTT) {
@@ -79,7 +81,9 @@ class BetterPlayerSubtitle {
     try {
       final timeSplit = scanner[0].split(timerSeparator);
       final start = _stringToDuration(timeSplit[0]);
-      final end = _stringToDuration(timeSplit[1]);
+      final endWithSettings = timeSplit[1];
+      final cueSettings = _parseCueSettings(endWithSettings);
+      final end = _stringToDuration(endWithSettings);
       final texts = scanner.sublist(1, scanner.length);
 
       return BetterPlayerSubtitle._(
@@ -87,6 +91,7 @@ class BetterPlayerSubtitle {
         start: start,
         end: end,
         texts: texts,
+        cueSettings: cueSettings,
       );
     } on Exception catch (_) {
       BetterPlayerUtils.log("Failed to parse subtitle line: $scanner");
@@ -110,10 +115,16 @@ class BetterPlayerSubtitle {
       }
 
       final start = _stringToDuration(timeSplit[0]);
-      final end = _stringToDuration(timeSplit[1]);
+      final endWithSettings = timeSplit[1];
+      final cueSettings = _parseCueSettings(endWithSettings);
+      final end = _stringToDuration(endWithSettings);
       final texts = scanner.sublist(firstLineOfText, scanner.length);
       return BetterPlayerSubtitle._(
-          index: index, start: start, end: end, texts: texts);
+          index: index,
+          start: start,
+          end: end,
+          texts: texts,
+          cueSettings: cueSettings);
     } on Exception catch (_) {
       BetterPlayerUtils.log("Failed to parse subtitle line: $scanner");
       return BetterPlayerSubtitle._();
@@ -158,8 +169,41 @@ class BetterPlayerSubtitle {
     }
   }
 
+  /// Parse VTT cue settings from the end time string
+  /// Example: "00:00:05.000 line:85% position:50% align:center" -> {line: "85%", position: "50%", align: "center"}
+  static Map<String, String>? _parseCueSettings(String endTimeWithSettings) {
+    try {
+      final parts = endTimeWithSettings.trim().split(" ");
+      if (parts.length <= 1) {
+        return null; // No cue settings
+      }
+
+      final Map<String, String> settings = {};
+      // Start from index 1 to skip the time part
+      for (int i = 1; i < parts.length; i++) {
+        final setting = parts[i].trim();
+        if (setting.isEmpty) continue;
+
+        // Check if it's a cue setting (key:value format, but not a timestamp)
+        if (setting.contains(':') &&
+            !RegExp(r'^\d{2}:\d{2}').hasMatch(setting)) {
+          final colonIndex = setting.indexOf(':');
+          final key = setting.substring(0, colonIndex);
+          final value = setting.substring(colonIndex + 1);
+          settings[key] = value;
+        }
+      }
+
+      return settings.isEmpty ? null : settings;
+    } on Exception catch (e) {
+      BetterPlayerUtils.log(
+          "Failed to parse cue settings: $endTimeWithSettings, error: $e");
+      return null;
+    }
+  }
+
   @override
   String toString() {
-    return 'BetterPlayerSubtitle{index: $index, start: $start, end: $end, texts: $texts}';
+    return 'BetterPlayerSubtitle{index: $index, start: $start, end: $end, texts: $texts, cueSettings: $cueSettings}';
   }
 }
