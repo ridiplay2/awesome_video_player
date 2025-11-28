@@ -27,8 +27,8 @@ class BetterPlayerSubtitlesDrawer extends StatefulWidget {
 class _BetterPlayerSubtitlesDrawerState
     extends State<BetterPlayerSubtitlesDrawer> {
   final RegExp htmlRegExp =
-      // ignore: unnecessary_raw_strings
-      RegExp(r"<[^>]*>", multiLine: true);
+  // ignore: unnecessary_raw_strings
+  RegExp(r"<[^>]*>", multiLine: true);
   late TextStyle _innerTextStyle;
   late TextStyle _outerTextStyle;
 
@@ -71,16 +71,17 @@ class _BetterPlayerSubtitlesDrawerState
         widget.betterPlayerController.betterPlayerSubtitlesSource?.language;
     final String fontFamily =
         _configuration!.languageFonts?[_currentLanguage] ??
-            _configuration!.fontFamily;
+        _configuration!.fontFamily;
 
     _outerTextStyle = TextStyle(
       fontSize: _configuration!.fontSize,
       fontFamily: fontFamily,
       fontVariations: _configuration!.fontVariations,
-      foreground: Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = _configuration!.outlineSize
-        ..color = _configuration!.outlineColor,
+      foreground:
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = _configuration!.outlineSize
+            ..color = _configuration!.outlineColor,
     );
 
     _innerTextStyle = TextStyle(
@@ -149,10 +150,7 @@ class _BetterPlayerSubtitlesDrawerState
             right: _configuration!.rightPadding,
             bottom: _playerVisible ? 30 : 0,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: textWidgets,
-          ),
+          child: Column(mainAxisSize: MainAxisSize.min, children: textWidgets),
         ),
       ),
     );
@@ -204,9 +202,11 @@ class _BetterPlayerSubtitlesDrawerState
   /// Returns a value from -1.0 (top) to 1.0 (bottom) for Alignment
   /// VTT line can be a percentage (e.g., "85%") or a line number
   double _calculateVerticalPosition(Map<String, String>? cueSettings) {
-    // Default position: use bottomPadding from configuration
-    // Convert bottomPadding of 130 to alignment value (near bottom)
-    final defaultAlignment = 0.7; // Slightly above bottom
+    // Default position: keep original position (0.7) but allow bottomPadding adjustment
+    // bottomPadding 기본값 20일 때 0.7 유지, 값에 따라 미세 조정
+    final bottomPadding = _configuration!.bottomPadding;
+    final defaultAlignment =
+        0.7 + ((20.0 - bottomPadding) / 100.0).clamp(-0.3, 0.3);
 
     if (cueSettings == null || !cueSettings.containsKey('line')) {
       return defaultAlignment;
@@ -229,11 +229,13 @@ class _BetterPlayerSubtitlesDrawerState
         final clampedAlignment = alignmentY.clamp(-0.9, 0.9);
 
         BetterPlayerUtils.log(
-            "VTT line:$lineValue -> alignmentY:$clampedAlignment");
+          "VTT line:$lineValue -> alignmentY:$clampedAlignment",
+        );
         return clampedAlignment;
       } catch (e) {
         BetterPlayerUtils.log(
-            "Failed to parse line percentage: $lineValue, error: $e");
+          "Failed to parse line percentage: $lineValue, error: $e",
+        );
         return defaultAlignment;
       }
     }
