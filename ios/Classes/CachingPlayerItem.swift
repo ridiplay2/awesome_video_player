@@ -47,6 +47,9 @@ open class CachingPlayerItem: AVPlayerItem {
         var pendingRequests = Set<AVAssetResourceLoadingRequest>()
         weak var owner: CachingPlayerItem?
         
+        // Serial queue for thread-safe access to pendingRequests and mediaData
+        let resourceLoaderQueue = DispatchQueue(label: "com.betterplayer.resourceLoader", qos: .userInitiated)
+        
         func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
             if playingFromData {
                 // Nothing to load.
@@ -66,7 +69,10 @@ open class CachingPlayerItem: AVPlayerItem {
         func startDataRequest(url: URL) {
             let configuration = URLSessionConfiguration.default
             configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-            session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+            // Use resourceLoaderQueue for URLSession delegate callbacks to ensure thread safety
+            let operationQueue = OperationQueue()
+            operationQueue.underlyingQueue = resourceLoaderQueue
+            session = URLSession(configuration: configuration, delegate: self, delegateQueue: operationQueue)
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
             let headersString = self.headers as? [String:AnyObject]
@@ -224,7 +230,8 @@ open class CachingPlayerItem: AVPlayerItem {
         }
         
         let asset = AVURLAsset(url: urlWithCustomScheme)
-        asset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
+        // Use the same queue as URLSession delegate for thread safety
+        asset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: resourceLoaderDelegate.resourceLoaderQueue)
         super.init(asset: asset, automaticallyLoadedAssetKeys: nil)
         
         resourceLoaderDelegate.owner = self
@@ -249,7 +256,8 @@ open class CachingPlayerItem: AVPlayerItem {
         resourceLoaderDelegate.mimeType = mimeType
         
         let asset = AVURLAsset(url: fakeUrl)
-        asset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
+        // Use the same queue as URLSession delegate for thread safety
+        asset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: resourceLoaderDelegate.resourceLoaderQueue)
         super.init(asset: asset, automaticallyLoadedAssetKeys: nil)
         resourceLoaderDelegate.owner = self
         
