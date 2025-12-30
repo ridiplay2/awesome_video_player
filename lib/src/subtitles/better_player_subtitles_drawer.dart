@@ -206,7 +206,7 @@ class _BetterPlayerSubtitlesDrawerState
     // bottomPadding 기본값 20일 때 적절한 위치 조정
     final bottomPadding = _configuration!.bottomPadding;
     final defaultAlignment =
-        0.75 + ((20.0 - bottomPadding) / 100.0).clamp(-0.2, 0.2);
+        0.85 + ((20.0 - bottomPadding) / 100.0).clamp(-0.3, 0.15);
 
     if (cueSettings == null || !cueSettings.containsKey('line')) {
       return defaultAlignment;
