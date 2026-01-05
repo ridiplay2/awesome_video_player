@@ -21,27 +21,97 @@ AVPictureInPictureController *_pipController;
 #endif
 
 @implementation BetterPlayer
-- (instancetype)initWithFrame:(CGRect)frame {
+
+- (instancetype)initWithTextureRegistry:(NSObject<FlutterTextureRegistry>*)registry {
     self = [super init];
     NSAssert(self, @"super init cannot be nil");
     _isInitialized = false;
     _isPlaying = false;
     _disposed = false;
+    _textureRegistry = registry;
     _player = [[AVPlayer alloc] init];
     _player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-    ///Fix for loading large videos
+    
+    // Fix for loading large videos
     if (@available(iOS 10.0, *)) {
         _player.automaticallyWaitsToMinimizeStalling = false;
     }
     self._observersAdded = false;
+    
+    // Setup video output for texture-based rendering
+    NSDictionary* pixelBufferOptions = @{
+        (NSString*)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
+        (NSString*)kCVPixelBufferIOSurfacePropertiesKey : @{},
+        (NSString*)kCVPixelBufferOpenGLESCompatibilityKey : @YES,
+        (NSString*)kCVPixelBufferMetalCompatibilityKey : @YES,
+    };
+    _videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:pixelBufferOptions];
+    
+    // Register texture
+    _textureId = [registry registerTexture:self];
+    
     return self;
 }
 
-- (nonnull UIView *)view {
-    BetterPlayerView *playerView = [[BetterPlayerView alloc] initWithFrame:CGRectZero];
-    playerView.player = _player;
-    return playerView;
+#pragma mark - FlutterTexture Protocol
+
+- (CVPixelBufferRef)copyPixelBuffer {
+    CVPixelBufferRef pixelBuffer = NULL;
+    
+    if (_videoOutput && _player.currentItem) {
+        CMTime currentTime = [_videoOutput itemTimeForHostTime:CACurrentMediaTime()];
+        if ([_videoOutput hasNewPixelBufferForItemTime:currentTime]) {
+            pixelBuffer = [_videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:NULL];
+            
+            // Store for repeated requests
+            if (pixelBuffer) {
+                if (_lastPixelBuffer) {
+                    CVPixelBufferRelease(_lastPixelBuffer);
+                }
+                _lastPixelBuffer = pixelBuffer;
+                CVPixelBufferRetain(_lastPixelBuffer);
+            }
+        } else if (_lastPixelBuffer) {
+            // Return the last known pixel buffer if no new one available
+            pixelBuffer = _lastPixelBuffer;
+            CVPixelBufferRetain(pixelBuffer);
+        }
+    }
+    
+    return pixelBuffer;
 }
+
+- (void)onTextureUnregistered:(NSObject<FlutterTexture>*)texture {
+    // Called when texture is unregistered
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self dispose];
+    });
+}
+
+#pragma mark - Display Link
+
+- (void)setupDisplayLink {
+    if (_displayLink) {
+        return;
+    }
+    _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkFired:)];
+    [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    _displayLink.paused = YES;
+}
+
+- (void)displayLinkFired:(CADisplayLink*)link {
+    if (_textureRegistry && _textureId >= 0) {
+        [_textureRegistry textureFrameAvailable:_textureId];
+    }
+}
+
+- (void)updateDisplayLinkState {
+    if (_displayLink) {
+        _displayLink.paused = !_isPlaying;
+    }
+}
+
+#pragma mark - Observers
 
 - (void)addObservers:(AVPlayerItem*)item {
     if (!self._observersAdded){
@@ -75,12 +145,22 @@ AVPictureInPictureController *_pipController;
     _disposed = false;
     _failedCount = 0;
     _key = nil;
+    
+    if (_displayLink) {
+        _displayLink.paused = YES;
+    }
+    
     if (_player.currentItem == nil) {
         return;
     }
 
     if (_player.currentItem == nil) {
         return;
+    }
+
+    // Remove video output from current item
+    if (_videoOutput && [_player.currentItem.outputs containsObject:_videoOutput]) {
+        [_player.currentItem removeOutput:_videoOutput];
     }
 
     [self removeObservers];
@@ -244,6 +324,15 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     _stalledCount = 0;
     _isStalledCheckStarted = false;
     _playerRate = 1;
+    
+    // Setup display link for texture updates
+    [self setupDisplayLink];
+    
+    // Add video output to the new item
+    if (_videoOutput) {
+        [item addOutput:_videoOutput];
+    }
+    
     [_player replaceCurrentItemWithPlayerItem:item];
 
     AVAsset* asset = [item asset];
@@ -446,6 +535,8 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     } else {
         [_player pause];
     }
+    
+    [self updateDisplayLinkState];
 }
 
 - (void)onReadyToPlay {
@@ -828,6 +919,25 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     [_eventChannel setStreamHandler:nil];
     [self disablePictureInPicture];
     [self setPictureInPicture:false];
+    
+    // Clean up display link
+    if (_displayLink) {
+        [_displayLink invalidate];
+        _displayLink = nil;
+    }
+    
+    // Clean up pixel buffer
+    if (_lastPixelBuffer) {
+        CVPixelBufferRelease(_lastPixelBuffer);
+        _lastPixelBuffer = NULL;
+    }
+    
+    // Unregister texture
+    if (_textureRegistry && _textureId >= 0) {
+        [_textureRegistry unregisterTexture:_textureId];
+        _textureId = -1;
+    }
+    
     _disposed = true;
 }
 

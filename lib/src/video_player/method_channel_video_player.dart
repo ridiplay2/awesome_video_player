@@ -399,15 +399,9 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
 
   @override
   Widget buildView(int? textureId) {
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      return UiKitView(
-        viewType: 'com.jhomlala/better_player',
-        creationParamsCodec: const StandardMessageCodec(),
-        creationParams: {'textureId': textureId!},
-      );
-    } else {
-      return Texture(textureId: textureId!);
-    }
+    // Use Texture widget for both iOS and Android
+    // This avoids UiKitView recreation issues on iOS (recreating_view error)
+    return Texture(textureId: textureId!);
   }
 
   @override

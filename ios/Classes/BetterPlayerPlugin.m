@@ -15,7 +15,6 @@ NSMutableDictionary* _dataSourceDict;
 NSMutableDictionary*  _timeObserverIdDict;
 NSMutableDictionary*  _artworkImageDict;
 CacheManager* _cacheManager;
-int texturesCount = -1;
 BetterPlayer* _notificationPlayer;
 bool _remoteCommandsInitialized = false;
 
@@ -27,8 +26,6 @@ bool _remoteCommandsInitialized = false;
                                 binaryMessenger:[registrar messenger]];
     BetterPlayerPlugin* instance = [[BetterPlayerPlugin alloc] initWithRegistrar:registrar];
     [registrar addMethodCallDelegate:instance channel:channel];
-    //[registrar publish:instance];
-    [registrar registerViewFactory:instance withId:@"com.jhomlala/better_player"];
 }
 
 - (instancetype)initWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
@@ -53,27 +50,10 @@ bool _remoteCommandsInitialized = false;
     [_players removeAllObjects];
 }
 
-#pragma mark - FlutterPlatformViewFactory protocol
-- (NSObject<FlutterPlatformView>*)createWithFrame:(CGRect)frame
-                                   viewIdentifier:(int64_t)viewId
-                                        arguments:(id _Nullable)args {
-    NSNumber* textureId = [args objectForKey:@"textureId"];
-    BetterPlayerView* player = [_players objectForKey:@(textureId.intValue)];
-    return player;
-}
-
-- (NSObject<FlutterMessageCodec>*)createArgsCodec {
-    return [FlutterStandardMessageCodec sharedInstance];
-}
-
 #pragma mark - BetterPlayerPlugin class
-- (int)newTextureId {
-    texturesCount += 1;
-    return texturesCount;
-}
 - (void)onPlayerSetup:(BetterPlayer*)player
                result:(FlutterResult)result {
-    int64_t textureId = [self newTextureId];
+    int64_t textureId = player.textureId;
     FlutterEventChannel* eventChannel = [FlutterEventChannel
                                          eventChannelWithName:[NSString stringWithFormat:@"better_player_channel/videoEvents%lld",
                                                                textureId]
@@ -289,7 +269,9 @@ bool _remoteCommandsInitialized = false;
         [_players removeAllObjects];
         result(nil);
     } else if ([@"create" isEqualToString:call.method]) {
-        BetterPlayer* player = [[BetterPlayer alloc] initWithFrame:CGRectZero];
+        // Create player with texture registry
+        NSObject<FlutterTextureRegistry>* textureRegistry = [_registrar textures];
+        BetterPlayer* player = [[BetterPlayer alloc] initWithTextureRegistry:textureRegistry];
         [self onPlayerSetup:player result:result];
     } else {
         NSDictionary* argsMap = call.arguments;
@@ -369,22 +351,13 @@ bool _remoteCommandsInitialized = false;
             [self disposeNotificationData:player];
             [self setRemoteCommandsNotificationNotActive];
             [_players removeObjectForKey:@(textureId)];
-            // If the Flutter contains https://github.com/flutter/engine/pull/12695,
-            // the `player` is disposed via `onTextureUnregistered` at the right time.
-            // Without https://github.com/flutter/engine/pull/12695, there is no guarantee that the
-            // texture has completed the un-reregistration. It may leads a crash if we dispose the
-            // `player` before the texture is unregistered. We add a dispatch_after hack to make sure the
-            // texture is unregistered before we dispose the `player`.
-            //
-            // TODO(cyanglaz): Remove this dispatch block when
-            // https://github.com/flutter/flutter/commit/8159a9906095efc9af8b223f5e232cb63542ad0b is in
-            // stable And update the min flutter version of the plugin to the stable version.
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)),
-                           dispatch_get_main_queue(), ^{
-                if (!player.disposed) {
-                    [player dispose];
-                }
-            });
+            
+            // Dispose the player immediately since we use texture-based rendering
+            // The texture will be properly unregistered in the dispose method
+            if (!player.disposed) {
+                [player dispose];
+            }
+            
             if ([_players count] == 0) {
                 [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
             }
