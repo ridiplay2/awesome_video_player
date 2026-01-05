@@ -15,8 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class CacheManager;
 
-@interface BetterPlayer : NSObject <FlutterPlatformView, FlutterStreamHandler, AVPictureInPictureControllerDelegate>
+@interface BetterPlayer : NSObject <FlutterTexture, FlutterStreamHandler, AVPictureInPictureControllerDelegate>
 @property(readonly, nonatomic) AVPlayer* player;
+@property(readonly, nonatomic) AVPlayerItemVideoOutput* videoOutput;
 @property(readonly, nonatomic) BetterPlayerEzDrmAssetsLoaderDelegate* loaderDelegate;
 @property(nonatomic) FlutterEventChannel* eventChannel;
 @property(nonatomic) FlutterEventSink eventSink;
@@ -35,6 +36,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic) float playerRate;
 @property(nonatomic) int overriddenDuration;
 @property(nonatomic) AVPlayerTimeControlStatus lastAvPlayerTimeControlStatus;
+@property(nonatomic) int64_t textureId;
+@property(nonatomic, weak) NSObject<FlutterTextureRegistry>* textureRegistry;
+@property(nonatomic) CADisplayLink* displayLink;
+@property(nonatomic) CVPixelBufferRef lastPixelBuffer;
+
+- (instancetype)initWithTextureRegistry:(NSObject<FlutterTextureRegistry>*)registry;
 - (void)play;
 - (void)pause;
 - (void)setIsLooping:(bool)isLooping;
@@ -42,7 +49,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (int64_t) duration;
 - (int64_t) position;
 
-- (instancetype)initWithFrame:(CGRect)frame;
 - (void)setMixWithOthers:(bool)mixWithOthers;
 - (void)seekTo:(int)location;
 - (void)seekTo:(int)location withCompletionHandler:(void (^)(BOOL finished))completionHandler;
