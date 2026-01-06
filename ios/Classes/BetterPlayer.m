@@ -97,6 +97,7 @@ AVPictureInPictureController *_pipController;
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkFired:)];
     [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
     _displayLink.paused = YES;
+    _displayLink.preferredFrameRateRange = CAFrameRateRangeMake(30, 60, 60);
 }
 
 - (void)displayLinkFired:(CADisplayLink*)link {
