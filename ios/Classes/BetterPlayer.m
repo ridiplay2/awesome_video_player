@@ -59,18 +59,20 @@ AVPictureInPictureController *_pipController;
     CVPixelBufferRef pixelBuffer = NULL;
     
     if (_videoOutput && _player.currentItem) {
-        CMTime currentTime = [_videoOutput itemTimeForHostTime:CACurrentMediaTime()];
-        if ([_videoOutput hasNewPixelBufferForItemTime:currentTime]) {
-            pixelBuffer = [_videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:NULL];
-            
-            // Store for repeated requests
-            if (pixelBuffer) {
-                if (_lastPixelBuffer) {
-                    CVPixelBufferRelease(_lastPixelBuffer);
-                }
-                _lastPixelBuffer = pixelBuffer;
-                CVPixelBufferRetain(_lastPixelBuffer);
+        // Use player.currentTime directly instead of itemTimeForHostTime
+        // to fix black screen issue on iPhone 16 Pro
+        CMTime currentTime = _player.currentTime;
+        
+        // Always try to get pixel buffer without hasNewPixelBufferForItemTime check
+        // as it may return NO incorrectly on some devices (iPhone 16 Pro)
+        pixelBuffer = [_videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:NULL];
+        
+        if (pixelBuffer) {
+            if (_lastPixelBuffer) {
+                CVPixelBufferRelease(_lastPixelBuffer);
             }
+            _lastPixelBuffer = pixelBuffer;
+            CVPixelBufferRetain(_lastPixelBuffer);
         } else if (_lastPixelBuffer) {
             // Return the last known pixel buffer if no new one available
             pixelBuffer = _lastPixelBuffer;
