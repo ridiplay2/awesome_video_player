@@ -13,6 +13,8 @@ const MethodChannel _channel = MethodChannel('better_player_channel');
 
 /// An implementation of [VideoPlayerPlatform] that uses method channels.
 class MethodChannelVideoPlayer extends VideoPlayerPlatform {
+  /// Tracks which textureIds use PlatformView (for DRM content on iOS)
+  final Map<int, bool> _platformViewPlayers = {};
   @override
   Future<void> init() {
     return _channel.invokeMethod<void>('init');
@@ -20,6 +22,7 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
 
   @override
   Future<void> dispose(int? textureId) {
+    _platformViewPlayers.remove(textureId);
     return _channel.invokeMethod<void>('dispose', <String, dynamic>{
       'textureId': textureId,
     });
@@ -28,26 +31,47 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
   @override
   Future<int?> create({
     BetterPlayerBufferingConfiguration? bufferingConfiguration,
+    bool usePlatformView = false,
   }) async {
-    late final Map<String, dynamic>? response;
-    if (bufferingConfiguration == null) {
-      response = await _channel.invokeMapMethod<String, dynamic>('create');
-    } else {
-      final responseLinkedHashMap = await _channel
-          .invokeMethod<Map?>('create', <String, dynamic>{
-            'minBufferMs': bufferingConfiguration.minBufferMs,
-            'maxBufferMs': bufferingConfiguration.maxBufferMs,
-            'bufferForPlaybackMs': bufferingConfiguration.bufferForPlaybackMs,
-            'bufferForPlaybackAfterRebufferMs':
-                bufferingConfiguration.bufferForPlaybackAfterRebufferMs,
-          });
+    final Map<String, dynamic> args = <String, dynamic>{};
 
-      response =
-          responseLinkedHashMap != null
-              ? Map<String, dynamic>.from(responseLinkedHashMap)
-              : null;
+    // iOS: usePlatformView for DRM content
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      args['usePlatformView'] = usePlatformView;
     }
-    return response?['textureId'] as int?;
+
+    if (bufferingConfiguration != null) {
+      args['minBufferMs'] = bufferingConfiguration.minBufferMs;
+      args['maxBufferMs'] = bufferingConfiguration.maxBufferMs;
+      args['bufferForPlaybackMs'] = bufferingConfiguration.bufferForPlaybackMs;
+      args['bufferForPlaybackAfterRebufferMs'] =
+          bufferingConfiguration.bufferForPlaybackAfterRebufferMs;
+    }
+
+    final responseLinkedHashMap = await _channel.invokeMethod<Map?>(
+      'create',
+      args.isNotEmpty ? args : null,
+    );
+    final response = responseLinkedHashMap != null
+        ? Map<String, dynamic>.from(responseLinkedHashMap)
+        : null;
+
+    final textureId = response?['textureId'] as int?;
+
+    // Track whether this player uses PlatformView
+    if (textureId != null) {
+      final usesPlatformViewResponse =
+          response?['usePlatformView'] as bool? ?? false;
+      _platformViewPlayers[textureId] = usesPlatformViewResponse;
+    }
+
+    return textureId;
+  }
+
+  @override
+  bool usesPlatformView(int? textureId) {
+    if (textureId == null) return false;
+    return _platformViewPlayers[textureId] ?? false;
   }
 
   @override
@@ -199,9 +223,9 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
     return Duration(
       milliseconds:
           await _channel.invokeMethod<int>('position', <String, dynamic>{
-            'textureId': textureId,
-          }) ??
-          0,
+                'textureId': textureId,
+              }) ??
+              0,
     );
   }
 
@@ -209,9 +233,9 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
   Future<DateTime?> getAbsolutePosition(int? textureId) async {
     final int milliseconds =
         await _channel.invokeMethod<int>('absolutePosition', <String, dynamic>{
-          'textureId': textureId,
-        }) ??
-        0;
+              'textureId': textureId,
+            }) ??
+            0;
     //
 
     const max = 8640000000000000;
@@ -229,7 +253,8 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
     return (await _channel.invokeMethod<Map<Object?, Object?>>(
           'platformDependentStats',
           <String, dynamic>{'textureId': textureId},
-        ))?.cast<String, num>() ??
+        ))
+            ?.cast<String, num>() ??
         {};
   }
 
@@ -399,8 +424,17 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
 
   @override
   Widget buildView(int? textureId) {
-    // Use Texture widget for both iOS and Android
-    // This avoids UiKitView recreation issues on iOS (recreating_view error)
+    // Hybrid mode:
+    // - PlatformView players (DRM content on iOS) use UiKitView with AVPlayerLayer
+    // - Texture players (non-DRM) use Texture widget for better performance
+    if (defaultTargetPlatform == TargetPlatform.iOS &&
+        usesPlatformView(textureId)) {
+      return UiKitView(
+        viewType: 'better_player_platform_view',
+        creationParamsCodec: const StandardMessageCodec(),
+        creationParams: {'textureId': textureId!},
+      );
+    }
     return Texture(textureId: textureId!);
   }
 

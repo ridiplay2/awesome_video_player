@@ -188,9 +188,14 @@ class VideoPlayerValue {
 class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   final BetterPlayerBufferingConfiguration bufferingConfiguration;
 
+  /// iOS only: If true, uses UiKitView (AVPlayerLayer) for DRM content support.
+  /// If false (default), uses Texture for better performance.
+  final bool usePlatformView;
+
   /// Constructs a [VideoPlayerController] and creates video controller on platform side.
   VideoPlayerController({
     this.bufferingConfiguration = const BetterPlayerBufferingConfiguration(),
+    this.usePlatformView = false,
     bool autoCreate = true,
   }) : super(VideoPlayerValue(duration: null)) {
     if (autoCreate) {
@@ -221,6 +226,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   Future<void> _create() async {
     _textureId = await _videoPlayerPlatform.create(
       bufferingConfiguration: bufferingConfiguration,
+      usePlatformView: usePlatformView,
     );
     _creatingCompleter.complete(null);
 

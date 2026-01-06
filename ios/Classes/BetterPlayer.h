@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class CacheManager;
 
-@interface BetterPlayer : NSObject <FlutterTexture, FlutterStreamHandler, AVPictureInPictureControllerDelegate>
+@interface BetterPlayer : NSObject <FlutterTexture, FlutterPlatformView, FlutterStreamHandler, AVPictureInPictureControllerDelegate>
 @property(readonly, nonatomic) AVPlayer* player;
 @property(readonly, nonatomic) AVPlayerItemVideoOutput* videoOutput;
 @property(readonly, nonatomic) BetterPlayerEzDrmAssetsLoaderDelegate* loaderDelegate;
@@ -40,8 +40,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, weak) NSObject<FlutterTextureRegistry>* textureRegistry;
 @property(nonatomic) CADisplayLink* displayLink;
 @property(nonatomic) CVPixelBufferRef lastPixelBuffer;
+// Hybrid mode: YES = use PlatformView (for DRM), NO = use Texture (default, better performance)
+@property(nonatomic, readonly) BOOL usePlatformView;
+@property(nonatomic, strong) BetterPlayerView* platformView;
 
-- (instancetype)initWithTextureRegistry:(NSObject<FlutterTextureRegistry>*)registry;
+- (instancetype)initWithTextureRegistry:(NSObject<FlutterTextureRegistry>*)registry usePlatformView:(BOOL)usePlatformView;
 - (void)play;
 - (void)pause;
 - (void)setIsLooping:(bool)isLooping;

@@ -8,8 +8,10 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "BetterPlayer.h"
 
-@interface BetterPlayerPlugin : NSObject<FlutterPlugin>
+@interface BetterPlayerPlugin : NSObject<FlutterPlugin, FlutterPlatformViewFactory>
 @property(readonly, strong, nonatomic) NSObject<FlutterPluginRegistrar> *registrar;
 @property(nonatomic, strong) NSObject<FlutterBinaryMessenger> *messenger;
 @property(nonatomic, strong) NSMutableDictionary<NSNumber*, BetterPlayer*> *players;
+// Maps viewId -> textureId for platform view mode
+@property(nonatomic, strong) NSMutableDictionary<NSNumber*, NSNumber*> *platformViewMapping;
 @end

@@ -255,8 +255,12 @@ class BetterPlayerController {
 
     ///Build videoPlayerController if null
     if (videoPlayerController == null) {
+      // Use PlatformView for DRM content on iOS (required for FairPlay)
+      final bool usePlatformView =
+          betterPlayerDataSource.drmConfiguration != null;
       videoPlayerController = VideoPlayerController(
         bufferingConfiguration: betterPlayerDataSource.bufferingConfiguration,
+        usePlatformView: usePlatformView,
       );
       videoPlayerController?.addListener(_onVideoPlayerChanged);
     }

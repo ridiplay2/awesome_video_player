@@ -22,13 +22,14 @@ AVPictureInPictureController *_pipController;
 
 @implementation BetterPlayer
 
-- (instancetype)initWithTextureRegistry:(NSObject<FlutterTextureRegistry>*)registry {
+- (instancetype)initWithTextureRegistry:(NSObject<FlutterTextureRegistry>*)registry usePlatformView:(BOOL)usePlatformView {
     self = [super init];
     NSAssert(self, @"super init cannot be nil");
     _isInitialized = false;
     _isPlaying = false;
     _disposed = false;
     _textureRegistry = registry;
+    _usePlatformView = usePlatformView;
     _player = [[AVPlayer alloc] init];
     _player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     
@@ -38,24 +39,42 @@ AVPictureInPictureController *_pipController;
     }
     self._observersAdded = false;
     
-    // Setup video output for texture-based rendering
-    NSDictionary* pixelBufferOptions = @{
-        (NSString*)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
-        (NSString*)kCVPixelBufferIOSurfacePropertiesKey : @{},
-        (NSString*)kCVPixelBufferOpenGLESCompatibilityKey : @YES,
-        (NSString*)kCVPixelBufferMetalCompatibilityKey : @YES,
-    };
-    _videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:pixelBufferOptions];
-    
-    // Register texture
-    _textureId = [registry registerTexture:self];
+    if (_usePlatformView) {
+        // PlatformView mode: Use AVPlayerLayer (required for DRM content)
+        _platformView = [[BetterPlayerView alloc] initWithFrame:CGRectZero];
+        _platformView.player = _player;
+        _textureId = -1; // Not using texture in this mode
+    } else {
+        // Texture mode: Use AVPlayerItemVideoOutput (better performance for non-DRM)
+        NSDictionary* pixelBufferOptions = @{
+            (NSString*)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
+            (NSString*)kCVPixelBufferIOSurfacePropertiesKey : @{},
+            (NSString*)kCVPixelBufferOpenGLESCompatibilityKey : @YES,
+            (NSString*)kCVPixelBufferMetalCompatibilityKey : @YES,
+        };
+        _videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:pixelBufferOptions];
+        
+        // Register texture
+        _textureId = [registry registerTexture:self];
+    }
     
     return self;
+}
+
+#pragma mark - FlutterPlatformView Protocol
+
+- (nonnull UIView *)view {
+    return _platformView;
 }
 
 #pragma mark - FlutterTexture Protocol
 
 - (CVPixelBufferRef)copyPixelBuffer {
+    // Only used in Texture mode
+    if (_usePlatformView) {
+        return NULL;
+    }
+    
     CVPixelBufferRef pixelBuffer = NULL;
     
     if (_videoOutput && _player.currentItem) {
@@ -82,16 +101,19 @@ AVPictureInPictureController *_pipController;
 }
 
 - (void)onTextureUnregistered:(NSObject<FlutterTexture>*)texture {
-    // Called when texture is unregistered
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self dispose];
-    });
+    // Called when texture is unregistered (Texture mode only)
+    if (!_usePlatformView) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self dispose];
+        });
+    }
 }
 
 #pragma mark - Display Link
 
 - (void)setupDisplayLink {
-    if (_displayLink) {
+    // Display link is only needed for Texture mode
+    if (_usePlatformView || _displayLink) {
         return;
     }
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkFired:)];
@@ -146,7 +168,7 @@ AVPictureInPictureController *_pipController;
     _failedCount = 0;
     _key = nil;
     
-    if (_displayLink) {
+    if (!_usePlatformView && _displayLink) {
         _displayLink.paused = YES;
     }
     
@@ -158,8 +180,8 @@ AVPictureInPictureController *_pipController;
         return;
     }
 
-    // Remove video output from current item
-    if (_videoOutput && [_player.currentItem.outputs containsObject:_videoOutput]) {
+    // Remove video output from current item (Texture mode only)
+    if (!_usePlatformView && _videoOutput && [_player.currentItem.outputs containsObject:_videoOutput]) {
         [_player.currentItem removeOutput:_videoOutput];
     }
 
@@ -325,12 +347,14 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     _isStalledCheckStarted = false;
     _playerRate = 1;
     
-    // Setup display link for texture updates
-    [self setupDisplayLink];
-    
-    // Add video output to the new item
-    if (_videoOutput) {
-        [item addOutput:_videoOutput];
+    if (!_usePlatformView) {
+        // Texture mode: Setup display link for texture updates
+        [self setupDisplayLink];
+        
+        // Add video output to the new item
+        if (_videoOutput) {
+            [item addOutput:_videoOutput];
+        }
     }
     
     [_player replaceCurrentItemWithPlayerItem:item];
@@ -536,7 +560,9 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         [_player pause];
     }
     
-    [self updateDisplayLinkState];
+    if (!_usePlatformView) {
+        [self updateDisplayLinkState];
+    }
 }
 
 - (void)onReadyToPlay {
@@ -920,22 +946,25 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     [self disablePictureInPicture];
     [self setPictureInPicture:false];
     
-    // Clean up display link
-    if (_displayLink) {
-        [_displayLink invalidate];
-        _displayLink = nil;
-    }
-    
-    // Clean up pixel buffer
-    if (_lastPixelBuffer) {
-        CVPixelBufferRelease(_lastPixelBuffer);
-        _lastPixelBuffer = NULL;
-    }
-    
-    // Unregister texture
-    if (_textureRegistry && _textureId >= 0) {
-        [_textureRegistry unregisterTexture:_textureId];
-        _textureId = -1;
+    if (_usePlatformView) {
+        // PlatformView mode cleanup
+        _platformView = nil;
+    } else {
+        // Texture mode cleanup
+        if (_displayLink) {
+            [_displayLink invalidate];
+            _displayLink = nil;
+        }
+        
+        if (_lastPixelBuffer) {
+            CVPixelBufferRelease(_lastPixelBuffer);
+            _lastPixelBuffer = NULL;
+        }
+        
+        if (_textureRegistry && _textureId >= 0) {
+            [_textureRegistry unregisterTexture:_textureId];
+            _textureId = -1;
+        }
     }
     
     _disposed = true;

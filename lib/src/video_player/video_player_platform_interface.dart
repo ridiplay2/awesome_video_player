@@ -67,10 +67,21 @@ abstract class VideoPlayerPlatform {
   }
 
   /// Creates an instance of a video player and returns its textureId.
+  ///
+  /// [usePlatformView] - iOS only: If true, uses UiKitView (AVPlayerLayer) instead of Texture.
+  /// This is required for DRM-protected content on iOS as AVPlayerItemVideoOutput
+  /// cannot access FairPlay-protected video frames.
   Future<int?> create({
     BetterPlayerBufferingConfiguration? bufferingConfiguration,
+    bool usePlatformView = false,
   }) {
     throw UnimplementedError('create() has not been implemented.');
+  }
+
+  /// Returns whether the player with the given textureId uses PlatformView.
+  /// This is used to determine how to build the video view widget.
+  bool usesPlatformView(int? textureId) {
+    return false;
   }
 
   /// Pre-caches a video.

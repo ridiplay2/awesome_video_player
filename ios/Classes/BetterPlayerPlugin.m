@@ -17,6 +17,8 @@ NSMutableDictionary*  _artworkImageDict;
 CacheManager* _cacheManager;
 BetterPlayer* _notificationPlayer;
 bool _remoteCommandsInitialized = false;
+// Counter for generating unique IDs for PlatformView mode (negative to avoid collision with texture IDs)
+static int64_t _platformViewIdCounter = -1;
 
 
 #pragma mark - FlutterPlugin protocol
@@ -26,6 +28,8 @@ bool _remoteCommandsInitialized = false;
                                 binaryMessenger:[registrar messenger]];
     BetterPlayerPlugin* instance = [[BetterPlayerPlugin alloc] initWithRegistrar:registrar];
     [registrar addMethodCallDelegate:instance channel:channel];
+    // Register platform view factory for DRM content (hybrid mode)
+    [registrar registerViewFactory:instance withId:@"better_player_platform_view"];
 }
 
 - (instancetype)initWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
@@ -34,6 +38,7 @@ bool _remoteCommandsInitialized = false;
     _messenger = [registrar messenger];
     _registrar = registrar;
     _players = [NSMutableDictionary dictionaryWithCapacity:1];
+    _platformViewMapping = [NSMutableDictionary dictionary];
     _timeObserverIdDict = [NSMutableDictionary dictionary];
     _artworkImageDict = [NSMutableDictionary dictionary];
     _dataSourceDict = [NSMutableDictionary dictionary];
@@ -48,12 +53,38 @@ bool _remoteCommandsInitialized = false;
         [player disposeSansEventChannel];
     }
     [_players removeAllObjects];
+    [_platformViewMapping removeAllObjects];
+}
+
+#pragma mark - FlutterPlatformViewFactory protocol
+
+- (NSObject<FlutterPlatformView>*)createWithFrame:(CGRect)frame
+                                   viewIdentifier:(int64_t)viewId
+                                        arguments:(id _Nullable)args {
+    NSNumber* textureId = [args objectForKey:@"textureId"];
+    BetterPlayer* player = _players[@(textureId.longLongValue)];
+    // Store mapping from viewId to textureId for later reference
+    _platformViewMapping[@(viewId)] = textureId;
+    return player;
+}
+
+- (NSObject<FlutterMessageCodec>*)createArgsCodec {
+    return [FlutterStandardMessageCodec sharedInstance];
 }
 
 #pragma mark - BetterPlayerPlugin class
 - (void)onPlayerSetup:(BetterPlayer*)player
                result:(FlutterResult)result {
-    int64_t textureId = player.textureId;
+    int64_t textureId;
+    
+    if (player.usePlatformView) {
+        // PlatformView mode: Generate a unique negative ID to avoid collision with texture IDs
+        textureId = _platformViewIdCounter--;
+    } else {
+        // Texture mode: Use the registered texture ID
+        textureId = player.textureId;
+    }
+    
     FlutterEventChannel* eventChannel = [FlutterEventChannel
                                          eventChannelWithName:[NSString stringWithFormat:@"better_player_channel/videoEvents%lld",
                                                                textureId]
@@ -62,7 +93,10 @@ bool _remoteCommandsInitialized = false;
     [eventChannel setStreamHandler:player];
     player.eventChannel = eventChannel;
     _players[@(textureId)] = player;
-    result(@{@"textureId" : @(textureId)});
+    result(@{
+        @"textureId" : @(textureId),
+        @"usePlatformView" : @(player.usePlatformView)
+    });
 }
 
 - (void) setupRemoteNotification :(BetterPlayer*) player{
@@ -270,8 +304,18 @@ bool _remoteCommandsInitialized = false;
         result(nil);
     } else if ([@"create" isEqualToString:call.method]) {
         // Create player with texture registry
+        // Check if usePlatformView is specified (for DRM content)
+        NSDictionary* argsMap = call.arguments;
+        BOOL usePlatformView = NO;
+        if (argsMap != nil && argsMap != [NSNull null]) {
+            id usePlatformViewObj = [argsMap objectForKey:@"usePlatformView"];
+            if (usePlatformViewObj != nil && usePlatformViewObj != [NSNull null]) {
+                usePlatformView = [usePlatformViewObj boolValue];
+            }
+        }
+        
         NSObject<FlutterTextureRegistry>* textureRegistry = [_registrar textures];
-        BetterPlayer* player = [[BetterPlayer alloc] initWithTextureRegistry:textureRegistry];
+        BetterPlayer* player = [[BetterPlayer alloc] initWithTextureRegistry:textureRegistry usePlatformView:usePlatformView];
         [self onPlayerSetup:player result:result];
     } else {
         NSDictionary* argsMap = call.arguments;
