@@ -240,7 +240,11 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           if (_currentDataSource == null ||
               _currentDataSource!.key == event.key) {
             value = value.copyWith(duration: event.duration, size: event.size);
-            _initializingCompleter.complete(null);
+            // Guard against "Future already completed" error when
+            // initialized event is received multiple times
+            if (!_initializingCompleter.isCompleted) {
+              _initializingCompleter.complete(null);
+            }
             _applyPlayPause();
           }
           break;
@@ -548,7 +552,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 
   /// The position in the current video.
   Future<Duration?> get position async {
-    if (!value.initialized && _isDisposed) {
+    if (!value.initialized || _isDisposed) {
       return null;
     }
     return _videoPlayerPlatform.getPosition(_textureId);
@@ -557,14 +561,14 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// The absolute position in the current video stream
   /// (i.e. EXT-X-PROGRAM-DATE-TIME in HLS).
   Future<DateTime?> get absolutePosition async {
-    if (!value.initialized && _isDisposed) {
+    if (!value.initialized || _isDisposed) {
       return null;
     }
     return _videoPlayerPlatform.getAbsolutePosition(_textureId);
   }
 
   Future<Map<String, num>> get platformDependentStats async {
-    if (!value.initialized && _isDisposed) {
+    if (!value.initialized || _isDisposed) {
       return {};
     }
     return _videoPlayerPlatform.getPlatformDependentStats(_textureId);
