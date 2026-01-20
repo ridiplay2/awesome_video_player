@@ -202,11 +202,7 @@ class _BetterPlayerSubtitlesDrawerState
   /// Returns a value from -1.0 (top) to 1.0 (bottom) for Alignment
   /// VTT line can be a percentage (e.g., "85%") or a line number
   double _calculateVerticalPosition(Map<String, String>? cueSettings) {
-    // Default position: keep original position (0.7) but allow bottomPadding adjustment
-    // bottomPadding 기본값 20일 때 적절한 위치 조정
-    final bottomPadding = _configuration!.bottomPadding;
-    final defaultAlignment =
-        0.75 + ((20.0 - bottomPadding) / 100.0).clamp(-0.2, 0.2);
+    final defaultAlignment = _configuration!.verticalAlignment.clamp(-1.0, 1.0);
 
     if (cueSettings == null || !cueSettings.containsKey('line')) {
       return defaultAlignment;
