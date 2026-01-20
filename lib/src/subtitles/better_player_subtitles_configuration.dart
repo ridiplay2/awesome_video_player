@@ -28,9 +28,6 @@ class BetterPlayerSubtitlesConfiguration {
   ///Right padding of the subtitle
   final double rightPadding;
 
-  ///Bottom padding of the subtitle
-  final double bottomPadding;
-
   ///Alignment of the subtitle
   final Alignment alignment;
 
@@ -43,6 +40,9 @@ class BetterPlayerSubtitlesConfiguration {
   ///Language-specific font configurations
   final Map<String, String>? languageFonts;
 
+  ///Vertical alignment of the subtitle (-1.0 = top, 0.0 = center, 1.0 = bottom)
+  final double verticalAlignment;
+
   const BetterPlayerSubtitlesConfiguration({
     this.fontSize = 14,
     this.fontColor = Colors.white,
@@ -52,10 +52,10 @@ class BetterPlayerSubtitlesConfiguration {
     this.fontFamily = "Roboto",
     this.leftPadding = 8.0,
     this.rightPadding = 8.0,
-    this.bottomPadding = 20.0,
     this.alignment = Alignment.center,
     this.backgroundColor = Colors.transparent,
     this.fontVariations,
     this.languageFonts,
+    this.verticalAlignment = 0.75,
   });
 }
