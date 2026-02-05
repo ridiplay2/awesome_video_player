@@ -27,8 +27,8 @@ class BetterPlayerSubtitlesDrawer extends StatefulWidget {
 class _BetterPlayerSubtitlesDrawerState
     extends State<BetterPlayerSubtitlesDrawer> {
   final RegExp htmlRegExp =
-  // ignore: unnecessary_raw_strings
-  RegExp(r"<[^>]*>", multiLine: true);
+      // ignore: unnecessary_raw_strings
+      RegExp(r"<[^>]*>", multiLine: true);
   late TextStyle _innerTextStyle;
   late TextStyle _outerTextStyle;
 
@@ -71,17 +71,16 @@ class _BetterPlayerSubtitlesDrawerState
         widget.betterPlayerController.betterPlayerSubtitlesSource?.language;
     final String fontFamily =
         _configuration!.languageFonts?[_currentLanguage] ??
-        _configuration!.fontFamily;
+            _configuration!.fontFamily;
 
     _outerTextStyle = TextStyle(
       fontSize: _configuration!.fontSize,
       fontFamily: fontFamily,
       fontVariations: _configuration!.fontVariations,
-      foreground:
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = _configuration!.outlineSize
-            ..color = _configuration!.outlineColor,
+      foreground: Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = _configuration!.outlineSize
+        ..color = _configuration!.outlineColor,
     );
 
     _innerTextStyle = TextStyle(
@@ -191,7 +190,10 @@ class _BetterPlayerSubtitlesDrawerState
   }
 
   Widget _buildHtmlWidget(String text, TextStyle textStyle) {
-    return HtmlWidget(text, textStyle: textStyle);
+    return HtmlWidget(
+      '<div style="text-align: center">$text</div>',
+      textStyle: textStyle,
+    );
   }
 
   BetterPlayerSubtitlesConfiguration setupDefaultConfiguration() {
