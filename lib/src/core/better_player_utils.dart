@@ -62,4 +62,23 @@ class BetterPlayerUtils {
       print(logMessage);
     }
   }
+
+  /// Logs a swallowed error and forwards it (with its stack trace) to the host
+  /// app's error handling (e.g. Sentry via [FlutterError.onError]) as a
+  /// non-fatal report, so the error stays visible without crashing the app.
+  static void logError(
+    String message,
+    Object error,
+    StackTrace stackTrace,
+  ) {
+    log("$message, error: $error");
+    FlutterError.reportError(
+      FlutterErrorDetails(
+        exception: error,
+        stack: stackTrace,
+        library: 'awesome_video_player',
+        context: ErrorDescription(message),
+      ),
+    );
+  }
 }
