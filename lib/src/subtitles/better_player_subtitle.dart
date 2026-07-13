@@ -114,6 +114,18 @@ class BetterPlayerSubtitle {
         firstLineOfText = 2;
       }
 
+      // The timing line is not in the expected '<start> --> <end>' format, so
+      // timeSplit has no end part. Report it (keeps it visible in Sentry) and
+      // skip this cue instead of accessing timeSplit[1] out of range.
+      if (timeSplit.length < 2) {
+        BetterPlayerUtils.logError(
+          "Failed to parse subtitle line: $scanner",
+          FormatException("Missing '$timerSeparator' in timing line", scanner),
+          StackTrace.current,
+        );
+        return BetterPlayerSubtitle._();
+      }
+
       final start = _stringToDuration(timeSplit[0]);
       final endWithSettings = timeSplit[1];
       final cueSettings = _parseCueSettings(endWithSettings);
